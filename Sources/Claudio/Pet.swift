@@ -197,11 +197,17 @@ struct PetView: View {
     @ViewBuilder private var statusLine: some View {
         let busy = monitor.sessions.filter { $0.phase == .thinking || $0.phase == .writing }
         if busy.count == 1, let s = busy.first {
-            Text("\(s.phase.label) · \(s.name)").font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+            caption("\(s.phase.label) · \(s.name)")
         } else if busy.count > 1 {
-            Text("\(busy.count) trabajando · \(busy.map(\.name).joined(separator: ", "))")
-                .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+            caption("\(busy.count) trabajando · \(busy.map(\.name).joined(separator: ", "))")
         }
+    }
+
+    /// Sombra negra suave para que se lea también sobre fondos blancos.
+    private func caption(_ text: String) -> some View {
+        Text(text).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+            .shadow(color: .black.opacity(0.55), radius: 1.5, x: 0, y: 0.5)
+            .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 0)
     }
 }
 
