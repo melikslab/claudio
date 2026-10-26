@@ -24,11 +24,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         monitor.start()
         usage.start()
+        // Si entras en la app de Claude, se quitan los globitos y la mascota deja de pedir atención.
+        NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main
+        ) { [monitor, notifier] note in
+            let app = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+            guard app?.bundleIdentifier == claudeBundleID else { return }
+            MainActor.assumeIsolated {
+                monitor.acknowledgeAll()
+                notifier.clearDelivered()
+            }
+        }
         if UserDefaults.standard.object(forKey: "petVisible") as? Bool ?? true {
             pet.show()
         }
     }
 }
+
+let claudeBundleID = "com.anthropic.claudefordesktop"
 
 /// Abre la sesión concreta en la app de Claude o, si no hay id, la app sin más.
 @MainActor
@@ -38,7 +51,7 @@ func openInClaude(_ session: ClaudeSession?) {
         NSWorkspace.shared.open(url)
         return
     }
-    if let app = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.anthropic.claudefordesktop") {
+    if let app = NSWorkspace.shared.urlForApplication(withBundleIdentifier: claudeBundleID) {
         NSWorkspace.shared.openApplication(at: app, configuration: .init())
     }
 }

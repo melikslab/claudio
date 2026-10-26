@@ -51,6 +51,7 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
 - **Clic en el globito o en la mascota:** abre el chat.
 - Si el globito no cabe encima de la mascota, se coloca solo debajo, a la derecha o a la izquierda.
 - **Al cerrarlo con la ✕** deja de llamar la atención: la mascota vuelve al reposo hasta que ese chat cambie de estado.
+- **Al entrar en la app de Claude** se quitan todos los globitos y avisos pendientes, también los del Centro de notificaciones.
 - Varios chats a la vez: hasta 3 globitos apilados, un contador naranja y la lista de los que siguen trabajando.
 
 ### 📊 Límites de uso en la barra de menús

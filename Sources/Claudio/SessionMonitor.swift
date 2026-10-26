@@ -69,6 +69,17 @@ final class SessionMonitor: ObservableObject {
         (focus?.phase ?? .idle) == .idle && Date().timeIntervalSince(lastActivity) > Self.sleepAfter
     }
 
+    /// Al entrar en la app de Claude: todo lo pendiente se da por visto.
+    func acknowledgeAll() {
+        let pending = alerts
+        guard !pending.isEmpty else { return }
+        for s in pending {
+            finished.remove(s.id)
+            if s.phase == .needsYou { quieted[s.id] = s.updatedAt }
+        }
+        poll()
+    }
+
     /// Despierta a la mascota (clic sobre ella) sin abrir ningún chat.
     func wake() { lastActivity = Date() }
 

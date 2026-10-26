@@ -59,7 +59,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         let isDone = session.phase == .done
         guard defaults.bool(forKey: isDone ? Pref.notifyDone : Pref.notifyNeedsYou) else { return }
         if defaults.bool(forKey: Pref.onlyWhenClaudeInactive),
-           NSWorkspace.shared.frontmostApplication?.bundleIdentifier == "com.anthropic.claudefordesktop" { return }
+           NSWorkspace.shared.frontmostApplication?.bundleIdentifier == claudeBundleID { return }
 
         SystemSounds.play(defaults.string(forKey: isDone ? Pref.soundDone : Pref.soundNeedsYou) ?? SystemSounds.none)
 
@@ -71,6 +71,11 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         }
         content.userInfo = ["sessionId": session.id]
         center.add(UNNotificationRequest(identifier: session.id, content: content, trigger: nil))
+    }
+
+    /// Quita del Centro de notificaciones los avisos de Claudio ya entregados.
+    func clearDelivered() {
+        center?.removeAllDeliveredNotifications()
     }
 
     func sendTest() {
