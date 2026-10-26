@@ -31,6 +31,34 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
 > [!IMPORTANT]
 > **🔒 100 % local. Nada va a la nube.** Claudio obtiene todos los datos de ficheros que ya están en tu Mac. No se conecta a internet, no inicia sesión en ninguna cuenta, no envía telemetría y no lee credenciales. Los detalles están en [Privacidad](#privacidad).
 
+## Capturas
+
+<p align="center">
+  <img src="docs/screenshots/mascota-globito.png" width="560" alt="La mascota celebra que un chat ha terminado y muestra un globito con el principio del mensaje, la pregunta de Claude y dos respuestas para elegir">
+</p>
+<p align="center"><em>Un chat ha terminado: la mascota avisa con un «!» y el globito muestra lo último que ha dicho Claude y las respuestas que propone. Un clic en una opción la copia y abre ese chat.</em></p>
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="docs/screenshots/menu-uso.png" alt="Menú de la barra de menús con las barras de uso de la sesión y semanal"></td>
+    <td align="center" width="50%"><img src="docs/screenshots/chats.png" alt="Desplegable con los últimos chats y su estado"></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Clic en el icono: límites de uso de 5 h y semanal (en naranja al acercarse al tope).</em></td>
+    <td align="center"><em>Al pasar el ratón: tus últimos chats y qué está haciendo cada uno.</em></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/mascota-trabajando.png" width="300" alt="Mascota escribiendo mientras Claude trabaja, con los chats activos debajo"></td>
+    <td align="center"><img src="docs/screenshots/mascota-reposo.png" width="300" alt="Mascota en reposo"></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Mientras Claude trabaja, con los chats activos debajo.</em></td>
+    <td align="center"><em>En reposo, esperando al siguiente chat.</em></td>
+  </tr>
+</table>
+
+<sub>Capturas hechas con el modo demo (`--demo`): los chats son inventados.</sub>
+
 ## Funciones
 
 ### 🐾 Mascota flotante
@@ -194,6 +222,8 @@ Claudio es un proyecto independiente; no está afiliado a Anthropic.
 <a id="english"></a>
 
 ### English
+
+<p align="center"><img src="docs/screenshots/mascota-globito.png" width="460" alt="Claudio pet with a reply bubble"></p>
 
 **Claudio** is a tiny **macOS-only** menu bar app (macOS 14+, built for Apple Silicon; a separate Intel build is available) with a draggable ASCII desktop pet that watches your Claude Code chats: the Code tab of the Claude desktop app, the CLI or an IDE. The pet animates while Claude is thinking or working. When Claude finishes, it pops up a bubble with the start of the last reply and the reply options Claude suggested. Clicking an option copies it and jumps straight to that chat.
 

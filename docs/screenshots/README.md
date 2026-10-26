@@ -10,14 +10,16 @@ En modo demo, el menú del icono tiene **«Pet state (demo)»** para ponerla en 
 
 Al terminar, `pkill -f Claudio.app; open build/Claudio.app` la vuelve a abrir normal.
 
-| Fichero | Qué tiene que salir |
-|---|---|
-| `mascota-globito.png` | La mascota en el escritorio con el globito de "Homepage redesign" y sus dos opciones |
-| `menu-uso.png` | El menú al hacer clic en el icono, con las barras de uso (42 % y 76 %, esta en naranja) |
-| `chats.png` | El desplegable al pasar el ratón por el icono, con la lista de chats |
-| `ajustes.png` | La ventana de Ajustes |
-| `notificacion.png` | Una notificación, desde Settings → «Send test alert» |
-| `estados.gif` (opcional) | Vídeo corto de la mascota pasando por los estados |
+| Fichero | Qué sale | Estado |
+|---|---|---|
+| `mascota-globito.png` | La mascota con el globito de "Homepage redesign" y sus dos opciones | ✅ |
+| `mascota-trabajando.png` | La mascota trabajando, con los chats activos debajo | ✅ |
+| `mascota-reposo.png` | La mascota en reposo | ✅ |
+| `menu-uso.png` | El menú al hacer clic en el icono, con las barras de uso | ✅ |
+| `chats.png` | El desplegable al pasar el ratón por el icono, con los últimos chats | ✅ |
+| `ajustes.png` | La ventana de Settings | Pendiente |
+| `notificacion.png` | Una notificación, desde Settings → «Send test alert» | Pendiente |
+| `estados.gif` (opcional) | Vídeo corto de la mascota pasando por los estados | Pendiente |
 
 ## Cómo hacerlas
 - **Una ventana o un menú, con sombra:** ⇧⌘4, luego pulsa la barra espaciadora y haz clic en la ventana.
