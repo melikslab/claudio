@@ -77,7 +77,7 @@ struct BubbleView: View {
                 Spacer()
                 Button(action: onDismiss) { Image(systemName: "xmark") }
                     .buttonStyle(.plain).font(.caption2).foregroundStyle(.secondary)
-                    .help("Cerrar y dejar de avisar")
+                    .help(L("Cerrar y dejar de avisar", "Close and stop alerting"))
             }
             // Máximo 4 líneas entre el mensaje y la pregunta.
             if let summary = session.summary {
@@ -91,7 +91,8 @@ struct BubbleView: View {
             if !session.options.isEmpty {
                 FlowOptions(options: session.options, onReply: onReply)
             }
-            Text(session.options.isEmpty ? "Clic para abrir el chat" : "Clic en una opción: se copia y abre el chat")
+            Text(session.options.isEmpty ? L("Clic para abrir el chat", "Click to open the chat")
+                                         : L("Clic en una opción: se copia y abre el chat", "Click an option: it is copied and the chat opens"))
                 .font(.caption2).foregroundStyle(.secondary)
         }
         .padding(10)
@@ -159,7 +160,7 @@ struct BubblesView: View {
 
     @ViewBuilder private func more(_ n: Int) -> some View {
         if n > 0 {
-            Text("+\(n) más en la barra de menús")
+            Text(L("+\(n) más en la barra de menús", "+\(n) more in the menu bar"))
                 .font(.caption2).padding(.horizontal, 8).padding(.vertical, 2)
                 .background(.regularMaterial, in: Capsule())
         }
@@ -220,7 +221,7 @@ struct PetView: View {
         if busy.count == 1, let s = busy.first {
             caption("\(s.phase.label) · \(s.name)")
         } else if busy.count > 1 {
-            caption("\(busy.count) trabajando · \(busy.map(\.name).joined(separator: ", "))")
+            caption(L("\(busy.count) trabajando", "\(busy.count) working") + " · \(busy.map(\.name).joined(separator: ", "))")
         }
     }
 

@@ -12,7 +12,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); v
 - Al entrar en la app de Claude se quitan los globitos, la mascota deja de pedir atención y se retiran las notificaciones entregadas.
 - Si ya estás en la app de Claude cuando un chat termina, su globito se ve 6 segundos y se desvanece solo.
 - Los globitos aparecen y desaparecen con un fundido.
-- Modo demo (`--demo`) con chats y uso inventados, para hacer capturas sin datos reales.
+- Modo demo (`--demo`), todo en inglés, con chats y uso inventados para hacer capturas sin datos reales. Tiene un submenú para elegir el estado de la mascota.
+- Interfaz en inglés cuando el Mac no está en español.
 - Descargas separadas para Apple Silicon (`Claudio-AppleSilicon.zip`) e Intel (`Claudio-Intel.zip`); `./build-app.sh --intel` compila la versión Intel aparte.
 
 ### Cambiado

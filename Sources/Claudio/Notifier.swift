@@ -65,7 +65,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
 
         guard defaults.bool(forKey: Pref.systemNotification), let center else { return }
         let content = UNMutableNotificationContent()
-        content.title = isDone ? "✅ \(session.name)" : "❓ \(session.name) te necesita"
+        content.title = isDone ? "✅ \(session.name)" : L("❓ \(session.name) te necesita", "❓ \(session.name) needs you")
         if defaults.bool(forKey: Pref.showSummary) {
             content.body = session.question ?? session.summary ?? ""
         }
@@ -80,7 +80,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
 
     func sendTest() {
         let fake = ClaudeSession(id: "test", hostSessionId: nil, name: "Claudio", phase: .done,
-                                 summary: "Así se verán los avisos cuando Claude termine.", question: nil,
+                                 summary: L("Así se verán los avisos cuando Claude termine.", "This is how alerts look when Claude finishes."), question: nil,
                                  updatedAt: Date())
         SystemSounds.play(defaults.string(forKey: Pref.soundDone) ?? SystemSounds.none)
         guard defaults.bool(forKey: Pref.systemNotification), let center else { return }

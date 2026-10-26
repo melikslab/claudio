@@ -8,11 +8,11 @@ enum Phase: Int, Comparable {
 
     var label: String {
         switch self {
-        case .idle: "En reposo"
-        case .thinking: "Pensando…"
-        case .writing: "Trabajando…"
-        case .done: "¡Terminado!"
-        case .needsYou: "Te necesita"
+        case .idle: L("En reposo", "Idle")
+        case .thinking: L("Pensando…", "Thinking…")
+        case .writing: L("Trabajando…", "Working…")
+        case .done: L("¡Terminado!", "Done!")
+        case .needsYou: L("Te necesita", "Needs you")
         }
     }
 }
@@ -361,10 +361,10 @@ struct TailInfo {
     }
 
     private static let appActions = [
-        "commit": "Hacer commit", "create_pr": "Crear PR", "merge": "Merge",
-        "fix_ci": "Arreglar CI", "address_comments": "Atender comentarios",
-        "resolve_conflicts": "Resolver conflictos", "verify": "Verificar",
-        "archive": "Archivar", "new_session": "Nueva sesión",
+        "commit": L("Hacer commit", "Commit"), "create_pr": L("Crear PR", "Create PR"), "merge": "Merge",
+        "fix_ci": L("Arreglar CI", "Fix CI"), "address_comments": L("Atender comentarios", "Address comments"),
+        "resolve_conflicts": L("Resolver conflictos", "Resolve conflicts"), "verify": L("Verificar", "Verify"),
+        "archive": L("Archivar", "Archive"), "new_session": L("Nueva sesión", "New session"),
     ]
 
     private static func option(_ a: [String: Any]) -> ReplyOption? {

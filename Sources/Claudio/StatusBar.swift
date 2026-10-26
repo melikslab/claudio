@@ -8,9 +8,9 @@ struct ChatsPopoverView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Últimos chats").font(.headline)
+            Text(L("Últimos chats", "Recent chats")).font(.headline)
             if monitor.sessions.isEmpty {
-                Text("No hay chats recientes.").font(.callout).foregroundStyle(.secondary)
+                Text(L("No hay chats recientes.", "No recent chats.")).font(.callout).foregroundStyle(.secondary)
             }
             ForEach(monitor.sessions.prefix(10)) { s in
                 Button { openInClaude(s); monitor.acknowledge(s.id) } label: {
@@ -142,15 +142,16 @@ final class StatusBarController: NSResponder, NSMenuDelegate {
         usageView.frame = NSRect(origin: .zero, size: usageView.fittingSize)
         usageItem.view = usageView
         menu.addItem(usageItem)
-        let cal = NSMenuItem(title: "Calibrar con /usage…", action: #selector(calibrate), keyEquivalent: "u")
+        let cal = NSMenuItem(title: L("Calibrar con /usage…", "Calibrate with /usage…"), action: #selector(calibrate), keyEquivalent: "u")
         cal.target = self
         menu.addItem(cal)
         menu.addItem(.separator())
         if Demo.isOn {
-            let demo = NSMenuItem(title: "Estado de la mascota (demo)", action: nil, keyEquivalent: "")
+            let demo = NSMenuItem(title: L("Estado de la mascota (demo)", "Pet state (demo)"), action: nil, keyEquivalent: "")
             let sub = NSMenu()
-            let states: [(String, Int)] = [("En reposo", 0), ("Pensando", 1), ("Trabajando", 2),
-                                           ("Terminado", 3), ("Te necesita", 4), ("Dormida", -1)]
+            let states: [(String, Int)] = [(L("En reposo", "Idle"), 0), (L("Pensando", "Thinking"), 1),
+                                           (L("Trabajando", "Working"), 2), (L("Terminado", "Done"), 3),
+                                           (L("Te necesita", "Needs you"), 4), (L("Dormida", "Asleep"), -1)]
             for (title, tag) in states {
                 let it = NSMenuItem(title: title, action: #selector(setDemoState(_:)), keyEquivalent: "")
                 it.tag = tag
@@ -161,18 +162,18 @@ final class StatusBarController: NSResponder, NSMenuDelegate {
             menu.addItem(demo)
             menu.addItem(.separator())
         }
-        let petItem = NSMenuItem(title: "Mostrar mascota", action: #selector(togglePet), keyEquivalent: "")
+        let petItem = NSMenuItem(title: L("Mostrar mascota", "Show pet"), action: #selector(togglePet), keyEquivalent: "")
         petItem.state = pet.isVisible ? .on : .off
         petItem.target = self
         menu.addItem(petItem)
-        let resetPet = NSMenuItem(title: "Recolocar mascota", action: #selector(resetPet), keyEquivalent: "")
+        let resetPet = NSMenuItem(title: L("Recolocar mascota", "Reset pet position"), action: #selector(resetPet), keyEquivalent: "")
         resetPet.target = self
         menu.addItem(resetPet)
-        let prefs = NSMenuItem(title: "Ajustes…", action: #selector(openSettings), keyEquivalent: ",")
+        let prefs = NSMenuItem(title: L("Ajustes…", "Settings…"), action: #selector(openSettings), keyEquivalent: ",")
         prefs.target = self
         menu.addItem(prefs)
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "Salir de Claudio", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(title: L("Salir de Claudio", "Quit Claudio"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
     }
 
     @objc private func calibrate() {

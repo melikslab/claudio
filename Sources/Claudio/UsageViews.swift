@@ -6,14 +6,14 @@ struct UsageSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("Tus límites de uso · estimado").font(.callout).foregroundStyle(.secondary)
+            Text(L("Tus límites de uso · estimado", "Your usage limits · estimated")).font(.callout).foregroundStyle(.secondary)
 
             if usage.calibration == nil {
-                Text("Escribe /usage en un chat de Claude y pasa aquí los % con «Calibrar con /usage…».")
+                Text(L("Escribe /usage en un chat de Claude y pasa aquí los % con «Calibrar con /usage…».", "Type /usage in a Claude chat and enter the % here with “Calibrate with /usage…”."))
                     .font(.callout).foregroundStyle(.secondary)
             } else {
-                if let five = usage.fiveHour { UsageBar(title: "Límite de sesión", estimate: five) }
-                if let week = usage.weekly { UsageBar(title: "Semanal · todos los modelos", estimate: week) }
+                if let five = usage.fiveHour { UsageBar(title: L("Límite de sesión", "Session limit"), estimate: five) }
+                if let week = usage.weekly { UsageBar(title: L("Semanal · todos los modelos", "Weekly · all models"), estimate: week) }
             }
         }
     }
@@ -61,8 +61,8 @@ struct UsageBar: View {
     }
 
     private var resetText: String {
-        guard let reset = estimate.resetsAt else { return "Empieza con tu próximo mensaje" }
-        return "Se restablece \(UsageFormat.reset(reset))"
+        guard let reset = estimate.resetsAt else { return L("Empieza con tu próximo mensaje", "Starts with your next message") }
+        return L("Se restablece ", "Resets ") + UsageFormat.reset(reset)
     }
 
     /// Azul normal; naranja al acercarse al límite; rojo cuando casi no queda.
@@ -80,11 +80,11 @@ enum UsageFormat {
         if left < 24 * 3600 {
             let mins = max(Int(left / 60), 0)
             let h = mins / 60, m = mins % 60
-            return h > 0 ? "en \(h) h \(m) min" : "en \(m) min"
+            return h > 0 ? L("en \(h) h \(m) min", "in \(h) h \(m) min") : L("en \(m) min", "in \(m) min")
         }
-        let day = date.formatted(.dateTime.weekday(.abbreviated))
-        let time = date.formatted(date: .omitted, time: .shortened)
-        return "el \(day), \(time)"
+        let day = date.formatted(.dateTime.weekday(.abbreviated).locale(Lang.locale))
+        let time = date.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: Lang.locale))
+        return L("el \(day), \(time)", "\(day), \(time)")
     }
 }
 
@@ -109,20 +109,20 @@ struct CalibrationView: View {
 
     var body: some View {
         Form {
-            Text("Escribe /usage en cualquier chat de la app de Claude y copia aquí lo que muestra.")
+            Text(L("Escribe /usage en cualquier chat de la app de Claude y copia aquí lo que muestra.", "Type /usage in any chat of the Claude app and copy what it shows here."))
                 .font(.callout).foregroundStyle(.secondary)
-            Section("Sesión actual (5 h)") {
+            Section(L("Sesión actual (5 h)", "Current session (5 h)")) {
                 percentField(value: $fivePercent)
-                DatePicker("Se restablece", selection: $fiveReset, displayedComponents: [.date, .hourAndMinute])
+                DatePicker(L("Se restablece", "Resets"), selection: $fiveReset, displayedComponents: [.date, .hourAndMinute])
             }
-            Section("Semanal · todos los modelos") {
+            Section(L("Semanal · todos los modelos", "Weekly · all models")) {
                 percentField(value: $weeklyPercent)
-                DatePicker("Se restablece", selection: $weeklyReset, displayedComponents: [.date, .hourAndMinute])
+                DatePicker(L("Se restablece", "Resets"), selection: $weeklyReset, displayedComponents: [.date, .hourAndMinute])
             }
             HStack {
                 Spacer()
-                Button("Cancelar", action: onDone).keyboardShortcut(.cancelAction)
-                Button("Guardar") {
+                Button(L("Cancelar", "Cancel"), action: onDone).keyboardShortcut(.cancelAction)
+                Button(L("Guardar", "Save")) {
                     usage.calibrate(fivePercent: fivePercent, fiveResetsAt: fiveReset,
                                     weeklyPercent: weeklyPercent, weeklyResetsAt: weeklyReset)
                     onDone()
@@ -131,13 +131,14 @@ struct CalibrationView: View {
             }
         }
         .formStyle(.grouped)
+        .environment(\.locale, Lang.locale)
         .frame(width: 400)
         .fixedSize(horizontal: false, vertical: true)
     }
 
     private func percentField(value: Binding<Double>) -> some View {
         HStack {
-            Text("% usado")
+            Text(L("% usado", "% used"))
             Spacer()
             TextField("", value: value, format: .number)
                 .frame(width: 60).multilineTextAlignment(.trailing)
@@ -159,7 +160,7 @@ final class CalibrationWindowController {
         let w = NSWindow(contentViewController: NSHostingController(rootView: CalibrationView(usage: usage) { [weak self] in
             self?.window?.close()
         }))
-        w.title = "Calibrar con /usage"
+        w.title = L("Calibrar con /usage", "Calibrate with /usage")
         w.styleMask = [.titled, .closable]
         w.isReleasedWhenClosed = false
         w.center()

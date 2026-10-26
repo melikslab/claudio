@@ -22,43 +22,43 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            Section("General") {
-                Toggle("Abrir Claudio al iniciar el Mac", isOn: $launchAtLogin)
+            Section(L("General", "General")) {
+                Toggle(L("Abrir Claudio al iniciar el Mac", "Open Claudio at login"), isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, on in setLaunchAtLogin(on) }
                 if let loginError {
                     Text(loginError).font(.caption).foregroundStyle(.red)
                 }
-                Toggle("Mostrar mascota en el escritorio", isOn: $petVisible)
+                Toggle(L("Mostrar mascota en el escritorio", "Show pet on the desktop"), isOn: $petVisible)
                     .onChange(of: petVisible) { _, on in on ? pet.show() : pet.hide() }
             }
 
-            Section("Cuando Claude termina") {
-                Toggle("Avisar", isOn: $notifyDone)
-                soundPicker("Sonido", selection: $soundDone).disabled(!notifyDone)
+            Section(L("Cuando Claude termina", "When Claude finishes")) {
+                Toggle(L("Avisar", "Alert"), isOn: $notifyDone)
+                soundPicker(L("Sonido", "Sound"), selection: $soundDone).disabled(!notifyDone)
             }
 
-            Section("Cuando Claude te necesita (permiso o pregunta)") {
-                Toggle("Avisar", isOn: $notifyNeedsYou)
-                soundPicker("Sonido", selection: $soundNeedsYou).disabled(!notifyNeedsYou)
+            Section(L("Cuando Claude te necesita (permiso o pregunta)", "When Claude needs you (permission or question)")) {
+                Toggle(L("Avisar", "Alert"), isOn: $notifyNeedsYou)
+                soundPicker(L("Sonido", "Sound"), selection: $soundNeedsYou).disabled(!notifyNeedsYou)
             }
 
-            Section("Notificaciones") {
-                Toggle("Mostrar notificación del sistema", isOn: $systemNotification)
+            Section(L("Notificaciones", "Notifications")) {
+                Toggle(L("Mostrar notificación del sistema", "Show system notification"), isOn: $systemNotification)
                     .onChange(of: systemNotification) { _, on in
                         if on { notifier.requestAuthorizationIfNeeded() }
                     }
-                Toggle("Incluir el mensaje de Claude", isOn: $showSummary).disabled(!systemNotification)
-                Toggle("Solo si la app de Claude no está delante", isOn: $onlyWhenClaudeInactive)
+                Toggle(L("Incluir el mensaje de Claude", "Include Claude's message"), isOn: $showSummary).disabled(!systemNotification)
+                Toggle(L("Solo si la app de Claude no está delante", "Only when the Claude app is not in front"), isOn: $onlyWhenClaudeInactive)
                 if notificationsDenied && systemNotification {
                     HStack {
-                        Text("macOS tiene bloqueadas las notificaciones de Claudio.")
+                        Text(L("macOS tiene bloqueadas las notificaciones de Claudio.", "macOS is blocking Claudio's notifications."))
                             .font(.caption).foregroundStyle(.orange)
-                        Button("Abrir Ajustes del Sistema") {
+                        Button(L("Abrir Ajustes del Sistema", "Open System Settings")) {
                             NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension")!)
                         }
                     }
                 }
-                Button("Probar aviso") { notifier.sendTest() }
+                Button(L("Probar aviso", "Send test alert")) { notifier.sendTest() }
             }
         }
         .formStyle(.grouped)
@@ -69,7 +69,7 @@ struct SettingsView: View {
 
     private func soundPicker(_ title: String, selection: Binding<String>) -> some View {
         Picker(title, selection: selection) {
-            ForEach(SystemSounds.all, id: \.self) { Text($0).tag($0) }
+            ForEach(SystemSounds.all, id: \.self) { Text($0 == SystemSounds.none ? L("Ninguno", "None") : $0).tag($0) }
         }
         .onChange(of: selection.wrappedValue) { _, name in SystemSounds.play(name) }
     }
@@ -79,11 +79,11 @@ struct SettingsView: View {
             if on { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
             loginError = nil
         } catch {
-            loginError = "No se pudo cambiar: \(error.localizedDescription)"
+            loginError = L("No se pudo cambiar: ", "Could not change it: ") + error.localizedDescription
         }
         launchAtLogin = SMAppService.mainApp.status == .enabled
         if on, SMAppService.mainApp.status == .requiresApproval {
-            loginError = "Apruébalo en Ajustes del Sistema → General → Ítems de inicio."
+            loginError = L("Apruébalo en Ajustes del Sistema → General → Ítems de inicio.", "Approve it in System Settings → General → Login Items.")
             SMAppService.openSystemSettingsLoginItems()
         }
     }
@@ -109,7 +109,7 @@ final class SettingsWindowController {
     func show() {
         if window == nil {
             let w = NSWindow(contentViewController: NSHostingController(rootView: SettingsView(notifier: notifier, pet: pet)))
-            w.title = "Ajustes de Claudio"
+            w.title = L("Ajustes de Claudio", "Claudio Settings")
             w.styleMask = [.titled, .closable]
             w.isReleasedWhenClosed = false
             w.center()

@@ -67,6 +67,9 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
 - Por defecto: sin sonido al terminar y **Pop** cuando pide permiso.
 - Opción de avisar solo si la app de Claude no está delante. Al pulsar la notificación se abre el chat.
 
+### 🌍 Idioma
+En español si tu Mac está en español; en inglés en cualquier otro idioma.
+
 ### ⚙️ Ajustes
 Abrir al iniciar el Mac, mostrar u ocultar la mascota, sonidos, notificaciones y botón de prueba.
 
@@ -145,7 +148,7 @@ build/Claudio.app/Contents/MacOS/Claudio --dump
 | `--parse <fichero.jsonl>` | Muestra lo que saldría en el globito para ese historial |
 | `--usage` | Imprime la estimación de uso actual |
 | `--calibrate <%5h> <reinicio5h> <%semanal> <reinicioSemanal>` | Calibra sin abrir la ventana; las fechas van en ISO 8601, p. ej. `2026-10-26T13:10:00Z` |
-| `--demo` | Abre la app con chats y uso inventados, para hacer capturas sin datos reales |
+| `--demo` | Abre la app con chats y uso inventados, en inglés, para hacer capturas sin datos reales |
 
 ## Privacidad
 
