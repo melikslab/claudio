@@ -7,6 +7,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); v
 ### Añadido
 - Icono de la app, que también usan las notificaciones y la cabecera de cada globito.
 - Los globitos se recolocan solos debajo, a la derecha o a la izquierda de la mascota si no caben encima.
+- La mascota se duerme `(−_−) zZz` tras 15 minutos sin actividad y se despierta con la actividad o con un clic.
+- El texto bajo la mascota se ajusta al borde de la pantalla y se recorta con "…" si no cabe.
 
 ### Cambiado
 - La mascota se puede mover libremente por todo el escritorio y por cualquier pantalla; antes no podía subir más allá de cierta altura.

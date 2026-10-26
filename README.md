@@ -32,6 +32,7 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
 ### 🐾 Mascota flotante
 - Siempre encima de las ventanas, visible en todos los escritorios y a pantalla completa.
 - Se arrastra libremente por todo el escritorio, en cualquier pantalla, y recuerda la posición. Si desconectas un monitor y se queda fuera, vuelve sola a la vista.
+- El texto de debajo ("Pensando… · nombre del chat") se desplaza hacia dentro si la mascota está pegada a un borde.
 - Cada estado tiene su animación ASCII:
 
   | Estado | Animación |
@@ -41,6 +42,7 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
   | Trabajando / escribiendo | `(•̀ᴗ•́)✎___` |
   | Terminado | `(ﾉ◕‿◕)ﾉ !` |
   | Te necesita (permiso o pregunta) | `(⊙_⊙) ?` |
+  | Dormida (15 min sin actividad; clic para despertarla) | `(−_−) zZz` |
 
 ### 💬 Globito con respuestas rápidas
 - Cuando un chat termina, aparece un globito con **el principio del último mensaje** (4 líneas como máximo) y la pregunta, si la hay.

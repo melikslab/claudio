@@ -90,7 +90,7 @@ final class StatusBarController: NSResponder, NSMenuDelegate {
         case .done: glyph = "◕‿◕ !"
         case .needsYou: glyph = "⊙_⊙ ?"
         }
-        item.button?.title = glyph
+        item.button?.title = monitor.isSleeping ? "−_− z" : glyph
     }
 
     // MARK: Hover

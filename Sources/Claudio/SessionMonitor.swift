@@ -38,6 +38,10 @@ struct ClaudeSession: Identifiable {
 @MainActor
 final class SessionMonitor: ObservableObject {
     @Published private(set) var sessions: [ClaudeSession] = []
+    /// Última vez que algún chat pensaba, trabajaba, había terminado o te necesitaba.
+    @Published private(set) var lastActivity = Date()
+    /// La mascota se duerme tras este tiempo sin actividad.
+    static let sleepAfter: TimeInterval = 15 * 60
     /// Se llama cuando una sesión pasa a "terminado" o "te necesita".
     var onAlert: ((ClaudeSession) -> Void)?
 
@@ -60,6 +64,13 @@ final class SessionMonitor: ObservableObject {
     var alerts: [ClaudeSession] {
         sessions.filter { $0.phase >= .done }
     }
+
+    var isSleeping: Bool {
+        (focus?.phase ?? .idle) == .idle && Date().timeIntervalSince(lastActivity) > Self.sleepAfter
+    }
+
+    /// Despierta a la mascota (clic sobre ella) sin abrir ningún chat.
+    func wake() { lastActivity = Date() }
 
     var busyCount: Int {
         sessions.filter { $0.phase == .thinking || $0.phase == .writing }.count
@@ -147,6 +158,7 @@ final class SessionMonitor: ObservableObject {
             lastPhase[s.id] = s.phase
         }
         primed = true
+        if result.contains(where: { $0.phase != .idle }) { lastActivity = Date() }
         sessions = result
     }
 

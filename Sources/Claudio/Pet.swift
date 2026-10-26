@@ -19,13 +19,19 @@ enum AsciiFrames {
         }
     }
 
+    /// Dormida tras un rato sin actividad.
+    static let sleeping: [Frame] = [("(−_−)    ", 0.9), ("(−_−) z  ", 0.9), ("(−_−) zZ ", 0.9), ("(−_−) zZz", 1.3)]
+
     /// Primer fotograma: la cara "quieta" de cada estado (para listas e iconos).
     static func still(for phase: Phase) -> String {
         phase == .thinking ? "(◑_◑)" : frames(for: phase)[0].text
     }
 
     static func frame(for phase: Phase, at date: Date) -> String {
-        let frames = frames(for: phase)
+        frame(in: frames(for: phase), at: date)
+    }
+
+    static func frame(in frames: [Frame], at date: Date) -> String {
         let total = frames.reduce(0) { $0 + $1.duration }
         var t = date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: total)
         for f in frames {
@@ -38,10 +44,14 @@ enum AsciiFrames {
 
 struct PetRenderer: View {
     let phase: Phase
+    /// Última actividad de Claude; en reposo, pasado `SessionMonitor.sleepAfter` se duerme.
+    var lastActivity: Date = .distantFuture
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 0.05)) { ctx in
-            Text(AsciiFrames.frame(for: phase, at: ctx.date))
+            let asleep = phase == .idle && ctx.date.timeIntervalSince(lastActivity) > SessionMonitor.sleepAfter
+            Text(asleep ? AsciiFrames.frame(in: AsciiFrames.sleeping, at: ctx.date)
+                        : AsciiFrames.frame(for: phase, at: ctx.date))
                 .font(.system(size: 22, weight: .semibold, design: .monospaced))
                 .foregroundStyle(.primary)
                 .padding(.horizontal, 10).padding(.vertical, 4)
@@ -161,15 +171,22 @@ struct BubblesView: View {
     }
 }
 
+/// Espacio libre desde el centro de la mascota hasta los bordes de su pantalla.
+final class PetEdges: ObservableObject {
+    @Published var left: CGFloat = 150
+    @Published var right: CGFloat = 150
+}
+
 struct PetView: View {
     @ObservedObject var monitor: SessionMonitor
+    @ObservedObject var edges: PetEdges
     let onDrag: (_ ended: Bool) -> Void
 
     var body: some View {
         let focus = monitor.focus
         let alerts = monitor.alerts.count
         VStack(spacing: 4) {
-            PetRenderer(phase: focus?.phase ?? .idle)
+            PetRenderer(phase: focus?.phase ?? .idle, lastActivity: monitor.lastActivity)
                 .overlay(alignment: .topTrailing) {
                     if alerts > 1 {
                         Text("\(alerts)").font(.caption2.bold()).foregroundStyle(.white)
@@ -178,8 +195,12 @@ struct PetView: View {
                     }
                 }
                 .onTapGesture {
-                    if let s = focus {
+                    if let s = focus, s.phase != .idle {
                         monitor.acknowledge(s.id)
+                        openInClaude(s)
+                    } else if monitor.isSleeping {
+                        monitor.wake()
+                    } else if let s = focus {
                         openInClaude(s)
                     }
                 }
@@ -203,11 +224,40 @@ struct PetView: View {
         }
     }
 
-    /// Sombra negra suave para que se lea también sobre fondos blancos.
     private func caption(_ text: String) -> some View {
+        EdgeAwareCaption(text: text, edges: edges)
+    }
+}
+
+/// Texto bajo la mascota: centrado, pero se desplaza hacia dentro si se saldría de la pantalla
+/// y se recorta con "…" si no cabe.
+private struct EdgeAwareCaption: View {
+    let text: String
+    @ObservedObject var edges: PetEdges
+    @State private var width: CGFloat = 0
+    private let margin: CGFloat = 6
+
+    var body: some View {
+        let maxWidth = max(40, min(PetWindowController.petSize.width - 2 * margin, edges.left + edges.right - 2 * margin))
+        let w = min(width, maxWidth)
+        // Desplazamiento del centro del texto para que quede entre los dos bordes.
+        let lo = -edges.left + margin + w / 2
+        let hi = edges.right - margin - w / 2
+        let dx = lo > hi ? 0 : min(max(0, lo), hi)
         Text(text).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+            // Sombra negra suave para que se lea también sobre fondos blancos.
             .shadow(color: .black.opacity(0.55), radius: 1.5, x: 0, y: 0.5)
             .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 0)
+            // Se mide el texto ya recortado (nunca más ancho que maxWidth)…
+            .background(GeometryReader { geo in
+                Color.clear
+                    .onAppear { width = geo.size.width }
+                    .onChange(of: geo.size.width) { _, new in width = new }
+            })
+            // …y luego se centra bajo la mascota y se desplaza lo justo.
+            .frame(maxWidth: maxWidth)
+            .offset(x: dx)
+            .animation(.easeOut(duration: 0.15), value: dx)
     }
 }
 
@@ -239,6 +289,7 @@ final class PetWindowController {
     private let bubblePanel = FreePanel(size: .zero)
     private let bubbleHost: NSHostingView<BubblesView>
     private let layout = BubbleLayout()
+    private let edges = PetEdges()
     private let monitor: SessionMonitor
     private var dragOffset: NSPoint?
     private var bag: Set<AnyCancellable> = []
@@ -248,7 +299,7 @@ final class PetWindowController {
         bubbleHost = NSHostingView(rootView: BubblesView(monitor: monitor, layout: layout))
         bubblePanel.contentView = bubbleHost
 
-        let host = NSHostingView(rootView: PetView(monitor: monitor) { [weak self] ended in
+        let host = NSHostingView(rootView: PetView(monitor: monitor, edges: edges) { [weak self] ended in
             self?.drag(ended: ended)
         })
         host.frame = NSRect(origin: .zero, size: Self.petSize)
@@ -265,11 +316,13 @@ final class PetWindowController {
         }
         panel.setFrameAutosaveName("ClaudioPet2")
         keepOnScreen()
+        updateEdges()
 
         NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification,
                                                object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated {
                 self?.keepOnScreen()
+                self?.updateEdges()
                 self?.placeBubbles()
             }
         }
@@ -314,6 +367,7 @@ final class PetWindowController {
         if ended {
             dragOffset = nil
             keepOnScreen()
+            updateEdges()
             panel.saveFrame(usingName: "ClaudioPet2")
             placeBubbles()
             return
@@ -321,7 +375,20 @@ final class PetWindowController {
         let offset = dragOffset ?? NSPoint(x: mouse.x - panel.frame.minX, y: mouse.y - panel.frame.minY)
         dragOffset = offset
         panel.setFrameOrigin(NSPoint(x: mouse.x - offset.x, y: mouse.y - offset.y))
+        updateEdges()
         placeBubbles()
+    }
+
+    /// Cuánto sitio hay a cada lado de la mascota hasta el borde de su pantalla (máximo, medio panel).
+    private func updateEdges() {
+        let pet = petRect
+        let center = NSPoint(x: pet.midX, y: pet.midY)
+        guard let screen = (NSScreen.screens.first { $0.frame.contains(center) } ?? panel.screen)?.frame else { return }
+        let half = Self.petSize.width / 2
+        let left = min(max(center.x - screen.minX, 0), half)
+        let right = min(max(screen.maxX - center.x, 0), half)
+        if edges.left != left { edges.left = left }
+        if edges.right != right { edges.right = right }
     }
 
     // MARK: Globos
