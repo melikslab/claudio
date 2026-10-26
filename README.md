@@ -57,7 +57,7 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
   </tr>
 </table>
 
-<sub>Capturas hechas con el modo demo (`--demo`): los chats son inventados.</sub>
+<sub>Los chats de las capturas son de ejemplo.</sub>
 
 ## Funciones
 
@@ -176,7 +176,6 @@ build/Claudio.app/Contents/MacOS/Claudio --dump
 | `--parse <fichero.jsonl>` | Muestra lo que saldría en el globito para ese historial |
 | `--usage` | Imprime la estimación de uso actual |
 | `--calibrate <%5h> <reinicio5h> <%semanal> <reinicioSemanal>` | Calibra sin abrir la ventana; las fechas van en ISO 8601, p. ej. `2026-10-26T13:10:00Z` |
-| `--demo` | Abre la app con chats y uso inventados, en inglés, para hacer capturas sin datos reales |
 
 ## Privacidad
 
