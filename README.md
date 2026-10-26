@@ -106,10 +106,10 @@ Open at login, show or hide the pet, sounds, notifications and a test alert.
 **Requirements:** a Mac with macOS 14 Sonoma or newer, plus the [Claude desktop app](https://claude.ai/download) with the Code tab, or Claude Code in the terminal or an IDE.
 
 ### Download
-1. From the [latest release](https://github.com/melikslab/claudio/releases/latest), download the zip for your Mac and unzip it:
-   - **`Claudio-AppleSilicon.zip`** for Apple silicon Macs (M1, M2, M3…). This is the main build.
-   - **`Claudio-Intel.zip`** for Intel Macs. It's a separate app, since recent macOS versions only run on Apple Silicon.
-2. Move `Claudio.app` to **Applications**.
+1. From the [latest release](https://github.com/melikslab/claudio/releases/latest), download the installer for your Mac:
+   - **`Claudio-AppleSilicon.dmg`** for Apple silicon Macs (M1, M2, M3…). This is the main build.
+   - **`Claudio-Intel.dmg`** for Intel Macs. It's a separate app, since recent macOS versions only run on Apple Silicon.
+2. Open the DMG and **drag Claudio onto the Applications folder**.
 3. The app isn't signed with an Apple Developer certificate, so macOS blocks it the first time. Open it with **right-click → Open**, or remove the quarantine flag:
 
 ```bash
@@ -127,7 +127,7 @@ git clone https://github.com/melikslab/claudio.git
 cd claudio && ./build-app.sh && open build/Claudio.app
 ```
 
-`build-app.sh` builds a release with SwiftPM for Apple Silicon, assembles the `.app` bundle (no Dock icon) and signs it ad hoc. `./build-app.sh --intel` builds the separate Intel app in `build/intel/Claudio.app`.
+`build-app.sh` builds a release with SwiftPM for Apple Silicon, assembles the `.app` bundle (no Dock icon) and signs it ad hoc. `./build-app.sh --intel` builds the separate Intel app in `build/intel/Claudio.app`. `scripts/make-dmg.sh` (or `scripts/make-dmg.sh --intel`) then wraps it in the drag-to-Applications DMG installer.
 
 ## Calibrating the usage estimate
 

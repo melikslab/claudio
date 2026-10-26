@@ -30,7 +30,7 @@ First public release of Claudio, a desktop companion for Claude Code on macOS.
 ### Other
 - 100% local: no network access, no accounts, no telemetry, read-only access to Claude's local files.
 - App icon, also shown in notifications and bubbles.
-- Separate downloads for Apple Silicon (`Claudio-AppleSilicon.zip`) and Intel (`Claudio-Intel.zip`).
+- Drag-to-Applications DMG installers, separate for Apple Silicon (`Claudio-AppleSilicon.dmg`) and Intel (`Claudio-Intel.dmg`).
 - Debug modes `--dump`, `--parse`, `--usage` and `--calibrate`, plus a sample-data mode for screenshots (see `docs/screenshots/`).
 
 [0.2.0]: https://github.com/melikslab/claudio/releases/tag/v0.2.0

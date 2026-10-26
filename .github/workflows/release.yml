@@ -16,19 +16,19 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}" ./build-app.sh
           VERSION="${GITHUB_REF_NAME#v}" ./build-app.sh --intel
-      - name: Comprimir
+      - name: Crear los instaladores DMG
         run: |
-          ditto -c -k --keepParent build/Claudio.app Claudio-AppleSilicon.zip
-          ditto -c -k --keepParent build/intel/Claudio.app Claudio-Intel.zip
+          scripts/make-dmg.sh
+          scripts/make-dmg.sh --intel
       - name: Publicar la release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           notes=$(awk -v v="${GITHUB_REF_NAME#v}" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md)
-          gh release create "$GITHUB_REF_NAME" Claudio-AppleSilicon.zip Claudio-Intel.zip \
+          gh release create "$GITHUB_REF_NAME" build/Claudio-AppleSilicon.dmg build/Claudio-Intel.dmg \
             --title "Claudio $GITHUB_REF_NAME" \
             --notes "$notes
 
-          **Download:** \`Claudio-AppleSilicon.zip\` for Apple silicon Macs (M1 or later) or \`Claudio-Intel.zip\` for Intel Macs.
+          **Download:** \`Claudio-AppleSilicon.dmg\` for Apple silicon Macs (M1 or later) or \`Claudio-Intel.dmg\` for Intel Macs.
 
-          **Install:** unzip, move Claudio.app to Applications and open it with right-click → Open (it isn't signed with an Apple certificate)."
+          **Install:** open the DMG, drag Claudio to Applications, then open it with right-click → Open the first time (it isn't signed with an Apple certificate)."

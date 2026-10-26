@@ -106,10 +106,10 @@ Abrir al iniciar el Mac, mostrar u ocultar la mascota, sonidos, notificaciones y
 **Requisitos:** un Mac con macOS 14 Sonoma o superior y la [app de escritorio de Claude](https://claude.ai/download) con la pestaña Code, o Claude Code en el terminal o en el IDE.
 
 ### Descargar
-1. Descarga de la [última release](https://github.com/melikslab/claudio/releases/latest) el zip de tu Mac y descomprímelo:
-   - **`Claudio-AppleSilicon.zip`** para Macs con chip Apple (M1, M2, M3…). Es la versión principal.
-   - **`Claudio-Intel.zip`** para Macs con Intel. Es una app aparte, porque las versiones recientes de macOS ya solo funcionan en Apple Silicon.
-2. Mueve `Claudio.app` a **Aplicaciones**.
+1. Descarga de la [última release](https://github.com/melikslab/claudio/releases/latest) el instalador de tu Mac:
+   - **`Claudio-AppleSilicon.dmg`** para Macs con chip Apple (M1, M2, M3…). Es la versión principal.
+   - **`Claudio-Intel.dmg`** para Macs con Intel. Es una app aparte, porque las versiones recientes de macOS ya solo funcionan en Apple Silicon.
+2. Abre el DMG y **arrastra Claudio a la carpeta Aplicaciones**.
 3. La app no está firmada con un certificado de Apple Developer, así que la primera vez macOS la bloquea. Ábrela con **clic derecho → Abrir**, o quita la cuarentena:
 
 ```bash
@@ -127,7 +127,7 @@ git clone https://github.com/melikslab/claudio.git
 cd claudio && ./build-app.sh && open build/Claudio.app
 ```
 
-`build-app.sh` compila en modo release con SwiftPM para Apple Silicon, monta el paquete `.app` (sin icono en el Dock) y lo firma ad hoc. Para la versión Intel, `./build-app.sh --intel` genera una app aparte en `build/intel/Claudio.app`.
+`build-app.sh` compila en modo release con SwiftPM para Apple Silicon, monta el paquete `.app` (sin icono en el Dock) y lo firma ad hoc. Para la versión Intel, `./build-app.sh --intel` genera una app aparte en `build/intel/Claudio.app`. Después, `scripts/make-dmg.sh` (o `scripts/make-dmg.sh --intel`) la mete en el instalador DMG de arrastrar a Aplicaciones.
 
 ## Calibrar el uso
 
