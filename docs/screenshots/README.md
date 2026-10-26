@@ -1,10 +1,12 @@
 # Capturas
 
-Imágenes que usa el README principal. Hazlas en **modo demo**, para que no salgan títulos ni textos de tus chats reales:
+Imágenes que usa el README principal. Hazlas en **modo demo**, para que no salgan títulos ni textos de tus chats reales. Desde la carpeta del proyecto:
 
 ```bash
 pkill -f Claudio.app; open build/Claudio.app --args --demo
 ```
+
+Al terminar, `pkill -f Claudio.app; open build/Claudio.app` la vuelve a abrir normal.
 
 | Fichero | Qué tiene que salir |
 |---|---|
