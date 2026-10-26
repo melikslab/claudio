@@ -1,0 +1,24 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Versión de Swift
+        run: swift --version
+      - name: Compilar y empaquetar
+        run: ./build-app.sh
+      - name: Comprobar el arranque en modo depuración
+        run: build/Claudio.app/Contents/MacOS/Claudio --dump
+      - name: Comprimir
+        run: ditto -c -k --keepParent build/Claudio.app Claudio.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Claudio
+          path: Claudio.zip

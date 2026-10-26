@@ -1,0 +1,30 @@
+name: Error
+description: Algo no funciona como debería
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Qué pasa
+      description: Qué esperabas y qué ha pasado.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Cómo reproducirlo
+      placeholder: |
+        1. Abro un chat en la pestaña Code…
+        2. …
+  - type: input
+    id: versions
+    attributes:
+      label: Versiones
+      description: macOS, Claudio y Claude Code (`ls ~/Library/Application\ Support/Claude/claude-code/`)
+      placeholder: macOS 26.1 · Claudio 0.1.0 · Claude Code 2.1.308
+  - type: textarea
+    id: dump
+    attributes:
+      label: Salida de --dump (opcional)
+      description: "`/Applications/Claudio.app/Contents/MacOS/Claudio --dump`. Revísala antes de pegarla: incluye títulos y fragmentos de tus chats."
+      render: text
