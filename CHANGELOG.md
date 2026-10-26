@@ -12,6 +12,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); v
 - La mascota se puede mover libremente por todo el escritorio y por cualquier pantalla; antes no podía subir más allá de cierta altura.
 - Al cerrar un globito con la ✕ la mascota deja de llamar la atención (también en "te necesita") hasta el siguiente cambio de estado.
 - El parpadeo en reposo es más lento: uno cada 6 segundos.
+- Al pensar ya no salen puntos: los ojos se van llenando (○ ◔ ◑ ◕ ●) y vuelven a empezar, con una animación más fluida.
+- Las barras de uso salen ahora al hacer clic en el icono, dentro del menú; al pasar el ratón solo se listan los últimos chats.
+- El README deja claro que Claudio es 100 % local y no envía nada a la nube.
 
 ## [0.1.0] - 2026-10-26
 

@@ -2,23 +2,20 @@ import AppKit
 import SwiftUI
 import Combine
 
-struct UsagePopoverView: View {
+/// Desplegable al pasar el ratón: los últimos chats.
+struct ChatsPopoverView: View {
     @ObservedObject var monitor: SessionMonitor
-    let usage: UsageEstimator
-    let onCalibrate: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            UsageSection(usage: usage, onCalibrate: onCalibrate)
-            Divider().padding(.vertical, 4)
-            Text("Chats").font(.headline)
+            Text("Últimos chats").font(.headline)
             if monitor.sessions.isEmpty {
                 Text("No hay chats recientes.").font(.callout).foregroundStyle(.secondary)
             }
             ForEach(monitor.sessions.prefix(10)) { s in
                 Button { openInClaude(s); monitor.acknowledge(s.id) } label: {
                     HStack {
-                        Text(AsciiFrames.frames(for: s.phase)[0])
+                        Text(AsciiFrames.still(for: s.phase))
                             .font(.system(size: 11, design: .monospaced))
                             .frame(width: 92, alignment: .leading)
                         Text(s.name).lineLimit(1)
@@ -38,7 +35,8 @@ struct UsagePopoverView: View {
     }
 }
 
-/// Icono en la barra de menús: al pasar el ratón muestra el uso; al hacer clic, el menú.
+/// Icono en la barra de menús: al pasar el ratón muestra los últimos chats; al hacer clic,
+/// el menú con las barras de uso y los ajustes.
 @MainActor
 final class StatusBarController: NSResponder, NSMenuDelegate {
     private let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -60,8 +58,7 @@ final class StatusBarController: NSResponder, NSMenuDelegate {
         self.calibration = CalibrationWindowController(usage: usage)
         super.init()
 
-        dropdown = DropdownPanel(content: UsagePopoverView(
-            monitor: monitor, usage: usage, onCalibrate: { [weak self] in self?.calibrate() }))
+        dropdown = DropdownPanel(content: ChatsPopoverView(monitor: monitor))
 
         if let button = item.button {
             button.font = .monospacedSystemFont(ofSize: 12, weight: .semibold)
@@ -138,15 +135,13 @@ final class StatusBarController: NSResponder, NSMenuDelegate {
     func menuNeedsUpdate(_ menu: NSMenu) {
         dropdown.orderOut(nil)
         menu.removeAllItems()
-        let head = NSMenuItem(title: "Uso estimado", action: nil, keyEquivalent: "")
-        head.isEnabled = false
-        menu.addItem(head)
-        if usage.calibration == nil {
-            menu.addItem(disabled("Sin calibrar"))
-        } else {
-            if let five = usage.fiveHour { menu.addItem(disabled(usageLine("Sesión 5 h", five))) }
-            if let week = usage.weekly { menu.addItem(disabled(usageLine("Semanal", week))) }
-        }
+        // Barras de uso dibujadas con SwiftUI dentro del propio menú.
+        let usageItem = NSMenuItem()
+        let usageView = NSHostingView(rootView: UsageSection(usage: usage)
+            .padding(.horizontal, 14).padding(.vertical, 10).frame(width: 360))
+        usageView.frame = NSRect(origin: .zero, size: usageView.fittingSize)
+        usageItem.view = usageView
+        menu.addItem(usageItem)
         let cal = NSMenuItem(title: "Calibrar con /usage…", action: #selector(calibrate), keyEquivalent: "u")
         cal.target = self
         menu.addItem(cal)
@@ -163,17 +158,6 @@ final class StatusBarController: NSResponder, NSMenuDelegate {
         menu.addItem(prefs)
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Salir de Claudio", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
-    }
-
-    private func disabled(_ title: String) -> NSMenuItem {
-        let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
-        item.isEnabled = false
-        return item
-    }
-
-    private func usageLine(_ title: String, _ e: UsageEstimate) -> String {
-        let reset = e.resetsAt.map { " · se restablece \(UsageFormat.reset($0))" } ?? ""
-        return "\(title): ≈ \(Int(e.percent.rounded())) %\(reset)"
     }
 
     @objc private func calibrate() {

@@ -2,30 +2,46 @@ import AppKit
 import SwiftUI
 import Combine
 
-/// Fotogramas ASCII por estado. Para pasar a imágenes basta con otro `PetRenderer`.
+/// Fotogramas ASCII por estado, cada uno con su duración en segundos.
+/// Para pasar a imágenes basta con otro `PetRenderer`.
 enum AsciiFrames {
-    static let blink = "(−‿−)"
+    typealias Frame = (text: String, duration: TimeInterval)
 
-    static func frames(for phase: Phase) -> [String] {
+    static func frames(for phase: Phase) -> [Frame] {
         switch phase {
-        case .idle:     ["(◕‿◕)"]
-        case .thinking: ["(◔_◔)   ", "(◔_◔) .  ", "(◑_◑) .. ", "(◑_◑) ..."]
-        case .writing:  ["(•̀ᴗ•́)✎   ", "(•̀ᴗ•́)✎_  ", "(•̀ᴗ•́)✎__ ", "(•̀ᴗ•́)✎___"]
-        case .done:     ["(ﾉ◕ヮ◕)ﾉ !", "\\(◕ヮ◕)/ !"]
-        case .needsYou: ["(⊙_⊙) ?", "(⊙_⊙)  "]
+        // Mira al frente y parpadea un instante cada 6 s.
+        case .idle:     [("(◕‿◕)", 5.82), ("(−‿−)", 0.18)]
+        // Los ojos se van llenando, dan la vuelta completa y vuelven a empezar.
+        case .thinking: [("(○_○)", 0.22), ("(◔_◔)", 0.22), ("(◑_◑)", 0.22), ("(◕_◕)", 0.22), ("(●_●)", 0.45)]
+        case .writing:  [("(•̀ᴗ•́)✎   ", 0.4), ("(•̀ᴗ•́)✎_  ", 0.4), ("(•̀ᴗ•́)✎__ ", 0.4), ("(•̀ᴗ•́)✎___", 0.4)]
+        case .done:     [("(ﾉ◕ヮ◕)ﾉ !", 0.4), ("\\(◕ヮ◕)/ !", 0.4)]
+        case .needsYou: [("(⊙_⊙) ?", 0.4), ("(⊙_⊙)  ", 0.4)]
         }
+    }
+
+    /// Primer fotograma: la cara "quieta" de cada estado (para listas e iconos).
+    static func still(for phase: Phase) -> String {
+        phase == .thinking ? "(◑_◑)" : frames(for: phase)[0].text
+    }
+
+    static func frame(for phase: Phase, at date: Date) -> String {
+        let frames = frames(for: phase)
+        let total = frames.reduce(0) { $0 + $1.duration }
+        var t = date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: total)
+        for f in frames {
+            if t < f.duration { return f.text }
+            t -= f.duration
+        }
+        return frames[0].text
     }
 }
 
 struct PetRenderer: View {
     let phase: Phase
-    /// En reposo parpadea una vez cada `blinkEvery` segundos.
-    private let blinkEvery: TimeInterval = 6
-    private let blinkLength: TimeInterval = 0.18
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: phase == .idle ? 0.09 : 0.4)) { ctx in
-            Text(frame(at: ctx.date))
+        TimelineView(.periodic(from: .now, by: 0.05)) { ctx in
+            Text(AsciiFrames.frame(for: phase, at: ctx.date))
                 .font(.system(size: 22, weight: .semibold, design: .monospaced))
                 .foregroundStyle(.primary)
                 .padding(.horizontal, 10).padding(.vertical, 4)
@@ -33,15 +49,6 @@ struct PetRenderer: View {
                 .overlay(Capsule().stroke(phase >= .done ? Color.orange : .clear, lineWidth: 2))
                 .fixedSize()
         }
-    }
-
-    private func frame(at date: Date) -> String {
-        let t = date.timeIntervalSinceReferenceDate
-        let frames = AsciiFrames.frames(for: phase)
-        if phase == .idle {
-            return t.truncatingRemainder(dividingBy: blinkEvery) < blinkLength ? AsciiFrames.blink : frames[0]
-        }
-        return frames[Int(t / 0.4) % frames.count]
     }
 }
 

@@ -3,22 +3,13 @@ import SwiftUI
 
 struct UsageSection: View {
     @ObservedObject var usage: UsageEstimator
-    let onCalibrate: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                Text("Tus límites de uso · estimado").foregroundStyle(.secondary)
-                Spacer()
-                Button(action: onCalibrate) {
-                    HStack(spacing: 4) { Text("Calibrar"); Image(systemName: "arrow.right") }
-                }
-                .buttonStyle(.plain)
-            }
-            .font(.callout)
+            Text("Tus límites de uso · estimado").font(.callout).foregroundStyle(.secondary)
 
             if usage.calibration == nil {
-                Text("Escribe /usage en un chat de Claude y pasa aquí los % con «Calibrar».")
+                Text("Escribe /usage en un chat de Claude y pasa aquí los % con «Calibrar con /usage…».")
                     .font(.callout).foregroundStyle(.secondary)
             } else {
                 if let five = usage.fiveHour { UsageBar(title: "Límite de sesión", estimate: five) }
