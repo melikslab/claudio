@@ -87,7 +87,7 @@ final class StatusBarController: NSResponder, NSMenuDelegate {
         case .idle: glyph = "◕‿◕"
         case .thinking: glyph = "◔_◔"
         case .writing: glyph = "✎"
-        case .done: glyph = "◕ヮ◕ !"
+        case .done: glyph = "◕‿◕ !"
         case .needsYou: glyph = "⊙_⊙ ?"
         }
         item.button?.title = glyph

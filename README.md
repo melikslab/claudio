@@ -3,7 +3,7 @@
 <img src="Resources/AppIcon.png" width="128" alt="Icono de Claudio">
 
 ```
-(◕‿◕)   (◔_◔) ..   (•̀ᴗ•́)✎__   (ﾉ◕ヮ◕)ﾉ !   (⊙_⊙) ?
+(◕‿◕)   (◑_◑)   (•̀ᴗ•́)✎__   (ﾉ◕‿◕)ﾉ !   (⊙_⊙) ?
 ```
 
 # Claudio
@@ -39,7 +39,7 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
   | En reposo | `(◕‿◕)`, parpadea cada 6 s |
   | Pensando | `(○_○)` → `(◔_◔)` → `(◑_◑)` → `(◕_◕)` → `(●_●)`: los ojos se van llenando |
   | Trabajando / escribiendo | `(•̀ᴗ•́)✎___` |
-  | Terminado | `(ﾉ◕ヮ◕)ﾉ !` |
+  | Terminado | `(ﾉ◕‿◕)ﾉ !` |
   | Te necesita (permiso o pregunta) | `(⊙_⊙) ?` |
 
 ### 💬 Globito con respuestas rápidas
