@@ -22,7 +22,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); v
 - El parpadeo en reposo es más lento: uno cada 6 segundos.
 - Al pensar ya no salen puntos: los ojos se van llenando (○ ◔ ◑ ◕ ●) y vuelven a empezar, con una animación más fluida.
 - Las barras de uso salen ahora al hacer clic en el icono, dentro del menú; al pasar el ratón solo se listan los últimos chats.
-- El README deja claro que Claudio es 100 % local y no envía nada a la nube, y que es solo para Mac.
+- README principal en inglés (con preguntas frecuentes) y versión completa en español en `README.es.md`. Deja claro que Claudio es 100 % local y solo para Mac.
 
 ## [0.1.0] - 2026-10-26
 
