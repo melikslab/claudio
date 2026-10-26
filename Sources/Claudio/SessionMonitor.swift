@@ -115,10 +115,26 @@ final class SessionMonitor: ObservableObject {
     }
 
     private var demoSessions: [ClaudeSession]? = Demo.isOn ? Demo.sessions() : nil
+    private var demoSleeping = false
+
+    /// Modo demo: pone la mascota en un estado (nil = dormida). El chat principal toma ese
+    /// estado y el resto queda en reposo, para que la mascota muestre justo ese.
+    func setDemoPhase(_ phase: Phase?) {
+        guard demoSessions != nil else { return }
+        demoSleeping = phase == nil
+        demoSessions = Demo.sessions().enumerated().map { i, s in
+            var s = s
+            s.phase = i == 0 ? (phase ?? .idle) : .idle
+            if phase == .thinking || phase == .writing { s.summary = nil; s.question = nil; s.options = [] }
+            return s
+        }
+        lastActivity = demoSleeping ? .distantPast : Date()
+        poll()
+    }
 
     private func poll() {
         if let demo = demoSessions {
-            lastActivity = Date()
+            if !demoSleeping { lastActivity = Date() }
             sessions = demo
             return
         }

@@ -146,6 +146,21 @@ final class StatusBarController: NSResponder, NSMenuDelegate {
         cal.target = self
         menu.addItem(cal)
         menu.addItem(.separator())
+        if Demo.isOn {
+            let demo = NSMenuItem(title: "Estado de la mascota (demo)", action: nil, keyEquivalent: "")
+            let sub = NSMenu()
+            let states: [(String, Int)] = [("En reposo", 0), ("Pensando", 1), ("Trabajando", 2),
+                                           ("Terminado", 3), ("Te necesita", 4), ("Dormida", -1)]
+            for (title, tag) in states {
+                let it = NSMenuItem(title: title, action: #selector(setDemoState(_:)), keyEquivalent: "")
+                it.tag = tag
+                it.target = self
+                sub.addItem(it)
+            }
+            demo.submenu = sub
+            menu.addItem(demo)
+            menu.addItem(.separator())
+        }
         let petItem = NSMenuItem(title: "Mostrar mascota", action: #selector(togglePet), keyEquivalent: "")
         petItem.state = pet.isVisible ? .on : .off
         petItem.target = self
@@ -168,6 +183,10 @@ final class StatusBarController: NSResponder, NSMenuDelegate {
     @objc private func resetPet() {
         pet.resetPosition()
         pet.show()
+    }
+
+    @objc private func setDemoState(_ sender: NSMenuItem) {
+        monitor.setDemoPhase(sender.tag < 0 ? nil : Phase(rawValue: sender.tag))
     }
 
     @objc private func togglePet() { pet.isVisible ? pet.hide() : pet.show() }

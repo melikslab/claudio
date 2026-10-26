@@ -6,6 +6,8 @@ Imágenes que usa el README principal. Hazlas en **modo demo**, para que no salg
 pkill -f Claudio.app; open build/Claudio.app --args --demo
 ```
 
+En modo demo, el menú del icono tiene **«Estado de la mascota (demo)»** para ponerla en reposo, pensando, trabajando, terminado, te necesita o dormida.
+
 Al terminar, `pkill -f Claudio.app; open build/Claudio.app` la vuelve a abrir normal.
 
 | Fichero | Qué tiene que salir |
