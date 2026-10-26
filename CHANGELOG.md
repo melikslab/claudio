@@ -1,43 +1,36 @@
-# Cambios
+# Changelog
 
-Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); versiones según [SemVer](https://semver.org/lang/es/).
+Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 
 ## [0.2.0] - 2026-10-26
 
-### Añadido
-- Icono de la app, que también usan las notificaciones y la cabecera de cada globito.
-- Los globitos se recolocan solos debajo, a la derecha o a la izquierda de la mascota si no caben encima.
-- La mascota se duerme `(−_−) zZz` tras 15 minutos sin actividad y se despierta con la actividad o con un clic.
-- El texto bajo la mascota se ajusta al borde de la pantalla y se recorta con "…" si no cabe.
-- Al entrar en la app de Claude se quitan los globitos, la mascota deja de pedir atención y se retiran las notificaciones entregadas.
-- Si ya estás en la app de Claude cuando un chat termina, su globito se ve 6 segundos y se desvanece solo.
-- Los globitos aparecen y desaparecen con un fundido.
-- Modo para hacer capturas con datos de ejemplo (ver `docs/screenshots/`).
-- Interfaz en inglés cuando el Mac no está en español.
-- Descargas separadas para Apple Silicon (`Claudio-AppleSilicon.zip`) e Intel (`Claudio-Intel.zip`); `./build-app.sh --intel` compila la versión Intel aparte.
+First public release of Claudio, a desktop companion for Claude Code on macOS.
 
-### Cambiado
-- La mascota se puede mover libremente por todo el escritorio y por cualquier pantalla; antes no podía subir más allá de cierta altura.
-- Al cerrar un globito con la ✕ la mascota deja de llamar la atención (también en "te necesita") hasta el siguiente cambio de estado.
-- El parpadeo en reposo es más lento: uno cada 6 segundos.
-- Al pensar ya no salen puntos: los ojos se van llenando (○ ◔ ◑ ◕ ●) y vuelven a empezar, con una animación más fluida.
-- Las barras de uso salen ahora al hacer clic en el icono, dentro del menú; al pasar el ratón solo se listan los últimos chats.
-- README principal en inglés (con preguntas frecuentes) y versión completa en español en `README.es.md`. Deja claro que Claudio es 100 % local y solo para Mac.
+### Desktop pet
+- Floating ASCII pet, always on top and on every Space, with an animation for each state: idle (blinks every 6 s), thinking (the eyes fill up ○ ◔ ◑ ◕ ●), working, done, needs you, and asleep after 15 minutes without activity.
+- Drag it anywhere on any display; it remembers its position and comes back into view if a monitor is unplugged. "Reset pet position" in the menu.
+- The caption under the pet ("Thinking… · chat name") shifts inward near screen edges and is truncated with "…" if it doesn't fit; a subtle shadow keeps it readable on light backgrounds.
 
-## [0.1.0] - 2026-10-26
+### Reply bubble
+- When a chat finishes, a bubble shows the start of Claude's last reply (4 lines at most), its question and the answers it suggests. Clicking an answer copies it and opens that exact chat in the Claude app.
+- If it doesn't fit above the pet, the bubble moves below, to the right or to the left, from the very first moment.
+- Up to 3 stacked bubbles with an orange counter when several chats need you.
+- Closing a bubble with ✕, or switching to the Claude app, stops the pet asking for attention and clears delivered notifications. If you're already in the Claude app, the bubble fades out after 6 seconds.
 
-Primera versión.
+### Menu bar
+- Click the icon for Claude-style usage bars for the 5-hour session and the weekly limit, blue, orange from 70% and red from 90%.
+- Hover the icon to list your recent chats with their state; click one to open it.
+- Usage is estimated locally from your chat history and calibrated by hand with `/usage`. No login required.
 
-### Añadido
-- Mascota ASCII flotante y arrastrable, con animación para cada estado: reposo, pensando, trabajando, terminado y te necesita.
-- Globito al terminar un chat, con el principio del último mensaje (4 líneas como máximo), la pregunta y las respuestas propuestas. Al pulsar una opción se copia y se abre ese chat.
-- Detección de todos los chats de Claude Code de los últimos 7 días, incluidos los que la app ha dormido.
-- Icono en la barra de menús con desplegable al pasar el ratón: barras de uso de 5 h y semanal al estilo de Claude, en azul, naranja y rojo, y lista de chats.
-- Estimación de uso a partir del historial local, calibrada a mano con `/usage`.
-- Sonidos y notificaciones configurables por separado para "terminado" y "te necesita".
-- Ajustes: abrir al iniciar el Mac, mostrar mascota, sonidos y notificaciones.
-- La mascota vuelve sola a la vista si se queda fuera de las pantallas; opción "Recolocar mascota".
-- Modos de depuración `--dump`, `--parse`, `--usage` y `--calibrate`.
+### Notifications and settings
+- Sound and macOS notification, set separately for "done" and "needs you". Defaults: no sound when done, "Pop" when Claude asks for permission.
+- Settings: open at login, show the pet, sounds, notifications, alert only when the Claude app isn't in front, and a test alert.
+- English interface, or Spanish when the Mac is set to Spanish.
+
+### Other
+- 100% local: no network access, no accounts, no telemetry, read-only access to Claude's local files.
+- App icon, also shown in notifications and bubbles.
+- Separate downloads for Apple Silicon (`Claudio-AppleSilicon.zip`) and Intel (`Claudio-Intel.zip`).
+- Debug modes `--dump`, `--parse`, `--usage` and `--calibrate`, plus a sample-data mode for screenshots (see `docs/screenshots/`).
 
 [0.2.0]: https://github.com/melikslab/claudio/releases/tag/v0.2.0
-[0.1.0]: https://github.com/melikslab/claudio/releases/tag/v0.1.0

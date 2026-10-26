@@ -29,6 +29,6 @@ jobs:
             --title "Claudio $GITHUB_REF_NAME" \
             --notes "$notes
 
-          **Descarga:** \`Claudio-AppleSilicon.zip\` para Macs con chip Apple (M1 o posterior) o \`Claudio-Intel.zip\` para Macs con Intel.
+          **Download:** \`Claudio-AppleSilicon.zip\` for Apple silicon Macs (M1 or later) or \`Claudio-Intel.zip\` for Intel Macs.
 
-          **Instalación:** descomprime, mueve Claudio.app a Aplicaciones y ábrela con clic derecho → Abrir (no está firmada con un certificado de Apple)."
+          **Install:** unzip, move Claudio.app to Applications and open it with right-click → Open (it isn't signed with an Apple certificate)."
