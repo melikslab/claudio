@@ -406,8 +406,7 @@ final class PetWindowController {
         func clampX(_ x: CGFloat, _ w: CGFloat) -> CGFloat { min(max(x, screen.minX), screen.maxX - w) }
         func clampY(_ y: CGFloat, _ h: CGFloat) -> CGFloat { min(max(y, screen.minY), screen.maxY - h) }
 
-        // El tamaño depende del orden (el "+N" va arriba o abajo), pero no de cuánto mide.
-        var size = bubbleHost.fittingSize
+        let size = measuredBubbleSize()
         let candidates: [(below: Bool, origin: (NSSize) -> NSPoint)] = [
             (false, { s in NSPoint(x: clampX(pet.midX - s.width / 2, s.width), y: pet.maxY + self.gap) }),
             (true,  { s in NSPoint(x: clampX(pet.midX - s.width / 2, s.width), y: pet.minY - self.gap - s.height) }),
@@ -419,16 +418,30 @@ final class PetWindowController {
             let o = c.origin(size)
             if screen.contains(NSRect(origin: o, size: size)) { chosen = c; break }
         }
-        if layout.belowPet != chosen.below {
-            layout.belowPet = chosen.below
-            bubbleHost.layoutSubtreeIfNeeded()
-            size = bubbleHost.fittingSize
-        }
+        if layout.belowPet != chosen.below { layout.belowPet = chosen.below }
         var origin = chosen.origin(size)
         // Si no cabe en ningún lado, al menos que no se salga de la pantalla.
         origin = NSPoint(x: clampX(origin.x, size.width), y: clampY(origin.y, size.height))
         bubblePanel.setFrame(NSRect(origin: origin, size: size), display: true)
         fadeInBubbles()
+    }
+
+    private var measured: (key: String, size: NSSize)?
+
+    /// Tamaño de los globitos con el contenido de *ahora*. El panel visible aún no ha redibujado
+    /// el contenido nuevo cuando llega el aviso, así que se mide con una vista nueva, que se
+    /// calcula al momento. Se guarda mientras el contenido no cambie. El orden de la pila
+    /// (encima o debajo) no cambia el tamaño.
+    private func measuredBubbleSize() -> NSSize {
+        let alerts = monitor.alerts
+        let key = alerts.prefix(BubblesView.maxShown).map {
+            "\($0.id)|\($0.updatedAt.timeIntervalSince1970)|\($0.name)|\($0.summary ?? "")|\($0.question ?? "")|\($0.options.map(\.label))"
+        }.joined(separator: "#") + "#\(alerts.count)"
+        if let m = measured, m.key == key { return m.size }
+        let probe = NSHostingView(rootView: BubblesView(monitor: monitor, layout: BubbleLayout()))
+        let size = probe.fittingSize
+        measured = (key, size)
+        return size
     }
 
     private var fadingOut = false
