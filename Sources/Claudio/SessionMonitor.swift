@@ -71,6 +71,11 @@ final class SessionMonitor: ObservableObject {
 
     /// Al entrar en la app de Claude: todo lo pendiente se da por visto.
     func acknowledgeAll() {
+        if demoSessions != nil {
+            demoSessions = demoSessions?.map { var s = $0; if s.phase >= .done { s.phase = .idle }; return s }
+            poll()
+            return
+        }
         let pending = alerts
         guard !pending.isEmpty else { return }
         for s in pending {
@@ -97,6 +102,11 @@ final class SessionMonitor: ObservableObject {
     /// El usuario ya lo ha visto (ha abierto el chat o cerrado el globo): deja de llamar la atención
     /// hasta que esa sesión cambie de estado otra vez.
     func acknowledge(_ id: String) {
+        if demoSessions != nil {
+            demoSessions = demoSessions?.map { var s = $0; if s.id == id, s.phase >= .done { s.phase = .idle }; return s }
+            poll()
+            return
+        }
         finished.remove(id)
         if let s = sessions.first(where: { $0.id == id }), s.phase == .needsYou {
             quieted[id] = s.updatedAt
@@ -104,7 +114,14 @@ final class SessionMonitor: ObservableObject {
         poll()
     }
 
+    private var demoSessions: [ClaudeSession]? = Demo.isOn ? Demo.sessions() : nil
+
     private func poll() {
+        if let demo = demoSessions {
+            lastActivity = Date()
+            sessions = demo
+            return
+        }
         reloadAppSessionsIfNeeded()
         let dir = home.appendingPathComponent(".claude/sessions")
         let files = (try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)) ?? []

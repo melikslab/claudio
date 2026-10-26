@@ -12,6 +12,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); v
 - Al entrar en la app de Claude se quitan los globitos, la mascota deja de pedir atención y se retiran las notificaciones entregadas.
 - Si ya estás en la app de Claude cuando un chat termina, su globito se ve 6 segundos y se desvanece solo.
 - Los globitos aparecen y desaparecen con un fundido.
+- Modo demo (`--demo`) con chats y uso inventados, para hacer capturas sin datos reales.
+- Descargas separadas para Apple Silicon (`Claudio-AppleSilicon.zip`) e Intel (`Claudio-Intel.zip`); `./build-app.sh --intel` compila la versión Intel aparte.
 
 ### Cambiado
 - La mascota se puede mover libremente por todo el escritorio y por cualquier pantalla; antes no podía subir más allá de cierta altura.
@@ -19,7 +21,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); v
 - El parpadeo en reposo es más lento: uno cada 6 segundos.
 - Al pensar ya no salen puntos: los ojos se van llenando (○ ◔ ◑ ◕ ●) y vuelven a empezar, con una animación más fluida.
 - Las barras de uso salen ahora al hacer clic en el icono, dentro del menú; al pasar el ratón solo se listan los últimos chats.
-- El README deja claro que Claudio es 100 % local y no envía nada a la nube.
+- El README deja claro que Claudio es 100 % local y no envía nada a la nube, y que es solo para Mac.
 
 ## [0.1.0] - 2026-10-26
 

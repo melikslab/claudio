@@ -39,6 +39,14 @@ final class UsageEstimator: ObservableObject {
     }
 
     func start() {
+        if Demo.isOn {
+            let demo = Demo.usage()
+            fiveHour = demo.fiveHour
+            weekly = demo.weekly
+            calibration = UsageCalibration(at: Date(), fiveHour: .init(percent: 42, resetsAt: Date()),
+                                           weekly: .init(percent: 76, resetsAt: Date()), cap5h: 1, cap7d: 1)
+            return
+        }
         refresh()
         timer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated { self?.refresh() }

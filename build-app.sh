@@ -1,14 +1,28 @@
 #!/bin/zsh
 # Compila y empaqueta Claudio.app (sin Xcode, solo con las Command Line Tools).
+#   ./build-app.sh           Apple Silicon (build/Claudio.app)
+#   ./build-app.sh --intel   Intel, como app aparte (build/intel/Claudio.app)
+#   VERSION=1.2.3 ./build-app.sh   versión que aparece en la app
 set -e
 cd "$(dirname "$0")"
-swift build -c release
-APP=build/Claudio.app
+VERSION=${VERSION:-0.2.0}
+
+if [[ "$1" == "--intel" ]]; then
+    ARCH=x86_64
+    OUT=build/intel
+else
+    ARCH=arm64
+    OUT=build
+fi
+swift build -c release --triple $ARCH-apple-macosx14.0
+BINARY=.build/$ARCH-apple-macosx/release/Claudio
+
+APP=$OUT/Claudio.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp .build/release/Claudio "$APP/Contents/MacOS/Claudio"
+cp "$BINARY" "$APP/Contents/MacOS/Claudio"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
-cat > "$APP/Contents/Info.plist" <<'PLIST'
+cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -18,11 +32,11 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
     <key>CFBundleExecutable</key><string>Claudio</string>
     <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleShortVersionString</key><string>0.1.0</string>
+    <key>CFBundleShortVersionString</key><string>$VERSION</string>
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSUIElement</key><true/>
 </dict>
 </plist>
 PLIST
 codesign --force --sign - "$APP"
-echo "Listo: $(pwd)/$APP"
+echo "Listo: $(pwd)/$APP ($(lipo -archs "$APP/Contents/MacOS/Claudio"), versión $VERSION)"

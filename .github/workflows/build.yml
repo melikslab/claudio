@@ -12,13 +12,17 @@ jobs:
       - uses: actions/checkout@v4
       - name: Versión de Swift
         run: swift --version
-      - name: Compilar y empaquetar
+      - name: Compilar y empaquetar (Apple Silicon)
         run: ./build-app.sh
+      - name: Compilar y empaquetar (Intel, aparte)
+        run: ./build-app.sh --intel
       - name: Comprobar el arranque en modo depuración
         run: build/Claudio.app/Contents/MacOS/Claudio --dump
       - name: Comprimir
-        run: ditto -c -k --keepParent build/Claudio.app Claudio.zip
+        run: |
+          ditto -c -k --keepParent build/Claudio.app Claudio-AppleSilicon.zip
+          ditto -c -k --keepParent build/intel/Claudio.app Claudio-Intel.zip
       - uses: actions/upload-artifact@v4
         with:
           name: Claudio
-          path: Claudio.zip
+          path: Claudio-*.zip

@@ -10,7 +10,8 @@
 
 **Una mascota ASCII para tu escritorio que te avisa cuando Claude termina, y tus límites de uso en la barra de menús de macOS.**
 
-![macOS 14+](https://img.shields.io/badge/macOS-14%2B-black?logo=apple)
+![Solo macOS 14+](https://img.shields.io/badge/solo%20macOS-14%2B-black?logo=apple)
+![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-nativo-555?logo=apple)
 ![Swift 5.9+](https://img.shields.io/badge/Swift-5.9%2B-F05138?logo=swift&logoColor=white)
 ![100 % local](https://img.shields.io/badge/datos-100%25%20local-2ea44f)
 ![Licencia MIT](https://img.shields.io/badge/licencia-MIT-blue)
@@ -23,6 +24,9 @@
 ---
 
 Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (pestaña Code), en el terminal o en el IDE. Una mascota flotante muestra en todo momento qué está haciendo Claude: cuando piensa, trabaja, termina o te necesita. Al terminar, la mascota salta con un **¡!** y un globito con lo último que ha dicho y las respuestas que te propone. Un clic te lleva directamente a ese chat.
+
+> [!NOTE]
+> **🍎 Solo para Mac.** Pensada para Macs con chip Apple (M1 o posterior) y macOS 14 Sonoma o superior. Para Macs con Intel hay una descarga aparte. No hay versión para Windows ni Linux.
 
 > [!IMPORTANT]
 > **🔒 100 % local. Nada va a la nube.** Claudio obtiene todos los datos de ficheros que ya están en tu Mac. No se conecta a internet, no inicia sesión en ninguna cuenta, no envía telemetría y no lee credenciales. Los detalles están en [Privacidad](#privacidad).
@@ -68,8 +72,12 @@ Abrir al iniciar el Mac, mostrar u ocultar la mascota, sonidos, notificaciones y
 
 ## Instalación
 
+**Requisitos:** un Mac con macOS 14 Sonoma o superior y la [app de escritorio de Claude](https://claude.ai/download) con la pestaña Code, o Claude Code en el terminal o en el IDE.
+
 ### Descargar
-1. Descarga `Claudio.zip` de la [última release](https://github.com/melikslab/claudio/releases/latest) y descomprímelo.
+1. Descarga de la [última release](https://github.com/melikslab/claudio/releases/latest) el zip de tu Mac y descomprímelo:
+   - **`Claudio-AppleSilicon.zip`** para Macs con chip Apple (M1, M2, M3…). Es la versión principal.
+   - **`Claudio-Intel.zip`** para Macs con Intel. Es una app aparte, porque las versiones recientes de macOS ya solo funcionan en Apple Silicon.
 2. Mueve `Claudio.app` a **Aplicaciones**.
 3. La app no está firmada con un certificado de Apple Developer, así que la primera vez macOS la bloquea. Ábrela con **clic derecho → Abrir**, o quita la cuarentena:
 
@@ -88,7 +96,7 @@ git clone https://github.com/melikslab/claudio.git
 cd claudio && ./build-app.sh && open build/Claudio.app
 ```
 
-`build-app.sh` compila en modo release con SwiftPM, monta el paquete `.app` (sin icono en el Dock) y lo firma ad hoc.
+`build-app.sh` compila en modo release con SwiftPM para Apple Silicon, monta el paquete `.app` (sin icono en el Dock) y lo firma ad hoc. Para la versión Intel, `./build-app.sh --intel` genera una app aparte en `build/intel/Claudio.app`.
 
 ## Calibrar el uso
 
@@ -137,6 +145,7 @@ build/Claudio.app/Contents/MacOS/Claudio --dump
 | `--parse <fichero.jsonl>` | Muestra lo que saldría en el globito para ese historial |
 | `--usage` | Imprime la estimación de uso actual |
 | `--calibrate <%5h> <reinicio5h> <%semanal> <reinicioSemanal>` | Calibra sin abrir la ventana; las fechas van en ISO 8601, p. ej. `2026-10-26T13:10:00Z` |
+| `--demo` | Abre la app con chats y uso inventados, para hacer capturas sin datos reales |
 
 ## Privacidad
 
@@ -183,7 +192,7 @@ Claudio es un proyecto independiente; no está afiliado a Anthropic.
 
 ### English
 
-**Claudio** is a tiny macOS menu bar app with a draggable ASCII desktop pet that watches your Claude Code chats: the Code tab of the Claude desktop app, the CLI or an IDE. The pet animates while Claude is thinking or working. When Claude finishes, it pops up a bubble with the start of the last reply and the reply options Claude suggested. Clicking an option copies it and jumps straight to that chat.
+**Claudio** is a tiny **macOS-only** menu bar app (macOS 14+, built for Apple Silicon; a separate Intel build is available) with a draggable ASCII desktop pet that watches your Claude Code chats: the Code tab of the Claude desktop app, the CLI or an IDE. The pet animates while Claude is thinking or working. When Claude finishes, it pops up a bubble with the start of the last reply and the reply options Claude suggested. Clicking an option copies it and jumps straight to that chat.
 
 Clicking the menu bar icon shows Claude-style bars for your 5-hour and weekly limits. They turn orange at 70 % and red at 90 %. Hovering lists your latest chats. The usage is **estimated** from local chat history and calibrated by hand from `/usage`, so Claudio needs no login.
 

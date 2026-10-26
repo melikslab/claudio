@@ -12,19 +12,23 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-      - name: Poner la versión de la etiqueta en Info.plist
-        run: sed -i '' "s|<string>0.1.0</string>|<string>${GITHUB_REF_NAME#v}</string>|" build-app.sh
-      - name: Compilar y empaquetar
-        run: ./build-app.sh
+      - name: Compilar y empaquetar (Apple Silicon e Intel por separado)
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}" ./build-app.sh
+          VERSION="${GITHUB_REF_NAME#v}" ./build-app.sh --intel
       - name: Comprimir
-        run: ditto -c -k --keepParent build/Claudio.app Claudio.zip
+        run: |
+          ditto -c -k --keepParent build/Claudio.app Claudio-AppleSilicon.zip
+          ditto -c -k --keepParent build/intel/Claudio.app Claudio-Intel.zip
       - name: Publicar la release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           notes=$(awk -v v="${GITHUB_REF_NAME#v}" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md)
-          gh release create "$GITHUB_REF_NAME" Claudio.zip \
+          gh release create "$GITHUB_REF_NAME" Claudio-AppleSilicon.zip Claudio-Intel.zip \
             --title "Claudio $GITHUB_REF_NAME" \
             --notes "$notes
+
+          **Descarga:** \`Claudio-AppleSilicon.zip\` para Macs con chip Apple (M1 o posterior) o \`Claudio-Intel.zip\` para Macs con Intel.
 
           **Instalación:** descomprime, mueve Claudio.app a Aplicaciones y ábrela con clic derecho → Abrir (no está firmada con un certificado de Apple)."
