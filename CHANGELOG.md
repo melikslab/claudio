@@ -10,6 +10,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); v
 - La mascota se duerme `(−_−) zZz` tras 15 minutos sin actividad y se despierta con la actividad o con un clic.
 - El texto bajo la mascota se ajusta al borde de la pantalla y se recorta con "…" si no cabe.
 - Al entrar en la app de Claude se quitan los globitos, la mascota deja de pedir atención y se retiran las notificaciones entregadas.
+- Si ya estás en la app de Claude cuando un chat termina, su globito se ve 6 segundos y se desvanece solo.
+- Los globitos aparecen y desaparecen con un fundido.
 
 ### Cambiado
 - La mascota se puede mover libremente por todo el escritorio y por cualquier pantalla; antes no podía subir más allá de cierta altura.

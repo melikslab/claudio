@@ -396,7 +396,7 @@ final class PetWindowController {
     /// Encima de la mascota si caben; si no, debajo, a la derecha o a la izquierda.
     private func placeBubbles() {
         guard panel.isVisible, !monitor.alerts.isEmpty else {
-            bubblePanel.orderOut(nil)
+            fadeOutBubbles()
             return
         }
         let pet = petRect
@@ -428,7 +428,36 @@ final class PetWindowController {
         // Si no cabe en ningún lado, al menos que no se salga de la pantalla.
         origin = NSPoint(x: clampX(origin.x, size.width), y: clampY(origin.y, size.height))
         bubblePanel.setFrame(NSRect(origin: origin, size: size), display: true)
+        fadeInBubbles()
+    }
+
+    private var fadingOut = false
+
+    private func fadeInBubbles() {
+        guard !bubblePanel.isVisible || fadingOut else { return }
+        fadingOut = false
+        if !bubblePanel.isVisible { bubblePanel.alphaValue = 0 }
         bubblePanel.orderFrontRegardless()
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.25
+            bubblePanel.animator().alphaValue = 1
+        }
+    }
+
+    private func fadeOutBubbles() {
+        guard bubblePanel.isVisible, !fadingOut else { return }
+        fadingOut = true
+        NSAnimationContext.runAnimationGroup({ ctx in
+            ctx.duration = 0.6
+            bubblePanel.animator().alphaValue = 0
+        }, completionHandler: { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self, self.fadingOut else { return }   // volvió a aparecer mientras tanto
+                self.fadingOut = false
+                self.bubblePanel.orderOut(nil)
+                self.bubblePanel.alphaValue = 1
+            }
+        })
     }
 
     // MARK: Visibilidad

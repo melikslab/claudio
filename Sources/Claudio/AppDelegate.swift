@@ -13,7 +13,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Pref.register()
         let notifier = Notifier()
         notifier.sessionsProvider = { [monitor] in monitor.sessions }
-        monitor.onAlert = { notifier.alert($0) }
+        monitor.onAlert = { [weak self] session in
+            notifier.alert(session)
+            self?.fadeIfAlreadyInClaude(session)
+        }
         self.notifier = notifier
 
         let pet = PetWindowController(monitor: monitor)
@@ -37,6 +40,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         if UserDefaults.standard.object(forKey: "petVisible") as? Bool ?? true {
             pet.show()
+        }
+    }
+
+    /// Segundos que se ve un globito si el chat termina mientras ya estás en la app de Claude.
+    private static let inClaudeBubbleSeconds: TimeInterval = 6
+
+    /// Si ya estás en la app de Claude, el aviso se ve unos segundos y se desvanece solo.
+    /// Si sales de Claude antes, se queda: igual no lo has visto.
+    private func fadeIfAlreadyInClaude(_ session: ClaudeSession) {
+        guard NSWorkspace.shared.frontmostApplication?.bundleIdentifier == claudeBundleID else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.inClaudeBubbleSeconds) { [monitor] in
+            guard NSWorkspace.shared.frontmostApplication?.bundleIdentifier == claudeBundleID,
+                  let current = monitor.alerts.first(where: { $0.id == session.id }),
+                  current.updatedAt == session.updatedAt else { return }
+            monitor.acknowledge(session.id)
         }
     }
 }
