@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="Resources/AppIcon.png" width="128" alt="Icono de Claudio">
+
 ```
 (◕‿◕)   (◔_◔) ..   (•̀ᴗ•́)✎__   (ﾉ◕ヮ◕)ﾉ !   (⊙_⊙) ?
 ```
@@ -27,12 +29,12 @@ No necesita iniciar sesión, no envía nada a ningún sitio y no modifica tu con
 
 ### 🐾 Mascota flotante
 - Siempre encima de las ventanas, visible en todos los escritorios y a pantalla completa.
-- Se arrastra a donde quieras y recuerda la posición. Si desconectas un monitor y se queda fuera, vuelve sola a la vista.
+- Se arrastra libremente por todo el escritorio, en cualquier pantalla, y recuerda la posición. Si desconectas un monitor y se queda fuera, vuelve sola a la vista.
 - Cada estado tiene su animación ASCII:
 
   | Estado | Animación |
   |---|---|
-  | En reposo | `(◕‿◕)` con parpadeo |
+  | En reposo | `(◕‿◕)`, parpadea cada 6 s |
   | Pensando | `(◔_◔) ...` |
   | Trabajando / escribiendo | `(•̀ᴗ•́)✎___` |
   | Terminado | `(ﾉ◕ヮ◕)ﾉ !` |
@@ -43,6 +45,8 @@ No necesita iniciar sesión, no envía nada a ningún sitio y no modifica tu con
 - Muestra **las respuestas que propone Claude**: los botones de fin de turno de la app, las opciones de `AskUserQuestion` o, si no hay, una lista final con pregunta.
 - **Clic en una opción:** se copia al portapapeles y se abre ese chat concreto (`claude://code/continue?session=…`). Solo tienes que pegar y pulsar Enter.
 - **Clic en el globito o en la mascota:** abre el chat.
+- Si el globito no cabe encima de la mascota, se coloca solo debajo, a la derecha o a la izquierda.
+- **Al cerrarlo con la ✕** deja de llamar la atención: la mascota vuelve al reposo hasta que ese chat cambie de estado.
 - Varios chats a la vez: hasta 3 globitos apilados, un contador naranja y la lista de los que siguen trabajando.
 
 ### 📊 Límites de uso en la barra de menús
@@ -146,8 +150,6 @@ build/Claudio.app/Contents/MacOS/Claudio --dump
 ## Hoja de ruta
 
 - [ ] Mascota con imágenes o sprites animados en lugar de ASCII
-- [ ] Recolocar los globitos a izquierda o derecha si la mascota está en un borde
-- [ ] Icono de la app
 - [ ] Firma y notarización para no tener que quitar la cuarentena
 
 ## Créditos

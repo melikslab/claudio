@@ -2,6 +2,17 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); versiones según [SemVer](https://semver.org/lang/es/).
 
+## [0.2.0] - 2026-10-26
+
+### Añadido
+- Icono de la app, que también usan las notificaciones y la cabecera de cada globito.
+- Los globitos se recolocan solos debajo, a la derecha o a la izquierda de la mascota si no caben encima.
+
+### Cambiado
+- La mascota se puede mover libremente por todo el escritorio y por cualquier pantalla; antes no podía subir más allá de cierta altura.
+- Al cerrar un globito con la ✕ la mascota deja de llamar la atención (también en "te necesita") hasta el siguiente cambio de estado.
+- El parpadeo en reposo es más lento: uno cada 6 segundos.
+
 ## [0.1.0] - 2026-10-26
 
 Primera versión.
@@ -17,4 +28,5 @@ Primera versión.
 - La mascota vuelve sola a la vista si se queda fuera de las pantallas; opción "Recolocar mascota".
 - Modos de depuración `--dump`, `--parse`, `--usage` y `--calibrate`.
 
+[0.2.0]: https://github.com/melikslab/claudio/releases/tag/v0.2.0
 [0.1.0]: https://github.com/melikslab/claudio/releases/tag/v0.1.0

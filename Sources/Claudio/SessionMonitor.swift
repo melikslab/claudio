@@ -46,6 +46,7 @@ final class SessionMonitor: ObservableObject {
     private var lastStatus: [String: String] = [:]
     private var lastPhase: [String: Phase] = [:]
     private var primed = false   // en el primer repaso no se avisa de lo que ya estaba
+    private var quieted: [String: Date] = [:]           // "te necesita" ya visto, por momento del estado
     private var finished: Set<String> = []          // sesiones con "!" pendiente de ver
     private var jsonlPaths: [String: URL] = [:]
     private var tailCache: [String: (mtime: Date, info: TailInfo)] = [:]
@@ -71,8 +72,13 @@ final class SessionMonitor: ObservableObject {
         }
     }
 
+    /// El usuario ya lo ha visto (ha abierto el chat o cerrado el globo): deja de llamar la atención
+    /// hasta que esa sesión cambie de estado otra vez.
     func acknowledge(_ id: String) {
         finished.remove(id)
+        if let s = sessions.first(where: { $0.id == id }), s.phase == .needsYou {
+            quieted[id] = s.updatedAt
+        }
         poll()
     }
 
@@ -96,9 +102,10 @@ final class SessionMonitor: ObservableObject {
             if previous == "busy" && status != "busy" { finished.insert(entry.sessionId) }
 
             let info = tail(for: entry.sessionId)
+            let updatedAt = Date(timeIntervalSince1970: (entry.statusUpdatedAt ?? entry.updatedAt ?? 0) / 1000)
             let phase: Phase
             if entry.waitingFor != nil || (status != "busy" && status != "idle") {
-                phase = .needsYou
+                phase = quieted[entry.sessionId] == updatedAt ? .idle : .needsYou
             } else if status == "busy" {
                 phase = info?.busyPhase ?? .thinking
             } else {
@@ -114,7 +121,7 @@ final class SessionMonitor: ObservableObject {
                 summary: info?.summary,
                 question: info?.question,
                 options: info?.options ?? [],
-                updatedAt: Date(timeIntervalSince1970: (entry.statusUpdatedAt ?? entry.updatedAt ?? 0) / 1000)
+                updatedAt: updatedAt
             ))
         }
 
