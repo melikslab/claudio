@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   release:
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
       - name: Compilar y empaquetar (Apple Silicon e Intel por separado)

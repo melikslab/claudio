@@ -70,11 +70,15 @@ private struct PetGlassBackground: NSViewRepresentable {
     let cornerRadius: CGFloat
 
     func makeNSView(context: Context) -> NSView {
+        // NSGlassEffectView solo existe en el SDK de macOS 26 (Swift 6.2); con uno anterior
+        // se compila con el material translúcido.
+        #if compiler(>=6.2)
         if #available(macOS 26, *) {
             let glass = NSGlassEffectView()
             glass.style = .clear
             return glass
         }
+        #endif
         let fx = NSVisualEffectView()
         fx.material = .hudWindow
         fx.blendingMode = .behindWindow
@@ -83,9 +87,11 @@ private struct PetGlassBackground: NSViewRepresentable {
     }
 
     func updateNSView(_ view: NSView, context: Context) {
+        #if compiler(>=6.2)
         if #available(macOS 26, *), let glass = view as? NSGlassEffectView {
             glass.cornerRadius = cornerRadius
         }
+        #endif
     }
 }
 
