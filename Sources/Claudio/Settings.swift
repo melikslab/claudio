@@ -15,6 +15,8 @@ struct SettingsView: View {
     @AppStorage(Pref.onlyWhenClaudeInactive) private var onlyWhenClaudeInactive = true
     @AppStorage(Pref.showSummary) private var showSummary = true
     @AppStorage("petVisible") private var petVisible = true
+    @AppStorage(Pref.petColor) private var petColor = ""
+    @AppStorage(Pref.petStyle) private var petStyle = PetStyle.sprites.rawValue
 
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var loginError: String?
@@ -30,6 +32,16 @@ struct SettingsView: View {
                 }
                 Toggle(L("Mostrar mascota en el escritorio", "Show pet on the desktop"), isOn: $petVisible)
                     .onChange(of: petVisible) { _, on in on ? pet.show() : pet.hide() }
+                Picker(L("Aspecto de la mascota", "Pet style"), selection: $petStyle) {
+                    Text(L("Animada", "Animated")).tag(PetStyle.sprites.rawValue)
+                    Text(L("Caracteres", "Characters")).tag(PetStyle.ascii.rawValue)
+                }
+                HStack {
+                    ColorPicker(L("Color de la mascota", "Pet color"), selection: petColorBinding, supportsOpacity: false)
+                    if !petColor.isEmpty {
+                        Button(L("Restablecer", "Reset")) { petColor = "" }
+                    }
+                }
             }
 
             Section(L("Cuando Claude termina", "When Claude finishes")) {
@@ -65,6 +77,12 @@ struct SettingsView: View {
         .frame(width: 440)
         .fixedSize(horizontal: false, vertical: true)
         .task { await refreshNotificationStatus() }
+    }
+
+    /// Sin color guardado muestra el del sistema; al elegir uno se guarda en hex.
+    private var petColorBinding: Binding<Color> {
+        Binding(get: { PetColor.color(from: petColor) ?? Color(nsColor: .labelColor) },
+                set: { petColor = PetColor.hex(from: $0) })
     }
 
     private func soundPicker(_ title: String, selection: Binding<String>) -> some View {

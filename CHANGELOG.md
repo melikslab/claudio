@@ -2,6 +2,16 @@
 
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Animated pet, now the default look: a hand-drawn face with an animation for each state (blinking at rest, loading eyes while thinking, typing on a keyboard while working, a wink and a happy face when done, a question mark when Claude needs you, and "z"s when asleep). The ASCII pet is still available under Settings → Pet style.
+- Pet color picker in Settings, for both looks.
+
+### Changed
+- The pet sits on a Liquid Glass background on macOS 26 and later.
+- The caption under the pet shows the state and the chat name on two lines.
+
 ## [0.2.1] - 2026-10-26
 
 ### Changed

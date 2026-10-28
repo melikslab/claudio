@@ -10,12 +10,16 @@ enum Pref {
     static let soundNeedsYou = "soundNeedsYou"
     static let onlyWhenClaudeInactive = "onlyWhenClaudeInactive"
     static let showSummary = "notificationShowsSummary"
+    /// Color del muñeco ASCII en hex ("#RRGGBB"); vacío = el color del sistema (claro/oscuro).
+    static let petColor = "petColor"
+    /// Aspecto de la mascota: "sprites" (animada con imágenes, por defecto) o "ascii".
+    static let petStyle = "petStyle"
 
     static func register() {
         UserDefaults.standard.register(defaults: [
             notifyDone: true, notifyNeedsYou: true, systemNotification: true,
             soundDone: SystemSounds.none, soundNeedsYou: "Pop",
-            onlyWhenClaudeInactive: true, showSummary: true,
+            onlyWhenClaudeInactive: true, showSummary: true, petStyle: "sprites",
         ])
     }
 }

@@ -42,22 +42,167 @@ enum AsciiFrames {
     }
 }
 
+/// Conversión entre el color elegido en ajustes y el hex guardado en `Pref.petColor`.
+enum PetColor {
+    static func color(from hex: String) -> Color? {
+        guard hex.count == 7, hex.hasPrefix("#"), let v = UInt32(hex.dropFirst(), radix: 16) else { return nil }
+        return Color(red: Double(v >> 16 & 0xFF) / 255, green: Double(v >> 8 & 0xFF) / 255, blue: Double(v & 0xFF) / 255)
+    }
+
+    static func hex(from color: Color) -> String {
+        guard let c = NSColor(color).usingColorSpace(.sRGB) else { return "" }
+        let v = { (x: CGFloat) in Int((min(max(x, 0), 1) * 255).rounded()) }
+        return String(format: "#%02X%02X%02X", v(c.redComponent), v(c.greenComponent), v(c.blueComponent))
+    }
+}
+
+extension View {
+    /// Fondo de la mascota: Liquid Glass en macOS 26+, material translúcido en versiones anteriores.
+    func petGlass() -> some View {
+        background(GeometryReader { g in PetGlassBackground(cornerRadius: g.size.height / 2) })
+            .clipShape(Capsule())
+    }
+}
+
+/// Cristal de AppKit en vez del de SwiftUI: el panel de la mascota nunca es la ventana activa
+/// y así el fondo no se vuelve opaco por estar "inactivo".
+private struct PetGlassBackground: NSViewRepresentable {
+    let cornerRadius: CGFloat
+
+    func makeNSView(context: Context) -> NSView {
+        if #available(macOS 26, *) {
+            let glass = NSGlassEffectView()
+            glass.style = .clear
+            return glass
+        }
+        let fx = NSVisualEffectView()
+        fx.material = .hudWindow
+        fx.blendingMode = .behindWindow
+        fx.state = .active
+        return fx
+    }
+
+    func updateNSView(_ view: NSView, context: Context) {
+        if #available(macOS 26, *), let glass = view as? NSGlassEffectView {
+            glass.cornerRadius = cornerRadius
+        }
+    }
+}
+
+extension UserDefaults {
+    /// Para observar `Pref.petStyle` con KVO (el nombre tiene que coincidir con la clave).
+    @objc dynamic var petStyle: String? { string(forKey: Pref.petStyle) }
+}
+
+/// Aspecto de la mascota elegido en ajustes (`Pref.petStyle`).
+enum PetStyle: String {
+    case ascii, sprites
+
+    static var current: PetStyle {
+        PetStyle(rawValue: UserDefaults.standard.string(forKey: Pref.petStyle) ?? "") ?? .sprites
+    }
+}
+
+/// Mascota animada a partir de Resources/PetSprites.png: celdas de 192 × 208 px, una animación
+/// por fila en el orden de los estados (reposo, pensando, trabajando, guiño, cara feliz,
+/// te necesita, dormido). Los dibujos son blancos sobre transparente y se tiñen con el color
+/// de la mascota.
+enum SpriteFrames {
+    private static let cell = CGSize(width: 192, height: 208)
+
+    /// Fotograma: fila y columna de la hoja y cuánto dura en pantalla.
+    private typealias Frame = (row: Int, col: Int, duration: TimeInterval)
+    /// Fotogramas y zona de la celda que ocupan todos ellos (así el dibujo queda centrado).
+    private typealias Animation = (frames: [Frame], crop: CGRect)
+
+    private static func row(_ r: Int, _ cols: Range<Int>, _ duration: TimeInterval) -> [Frame] {
+        cols.map { (r, $0, duration) }
+    }
+
+    private static func animation(for phase: Phase) -> Animation {
+        switch phase {
+        // Mira al frente y parpadea un instante cada 6 s, como la versión ASCII.
+        case .idle:     (row(0, 0..<1, 5.82) + row(0, 1..<2, 0.18), CGRect(x: 31, y: 54, width: 130, height: 70))
+        case .thinking: (row(1, 0..<6, 0.18), CGRect(x: 31, y: 52, width: 131, height: 74))   // los ojos se van cargando
+        case .writing:  (row(2, 0..<6, 0.12), CGRect(x: 29, y: 52, width: 135, height: 144))  // escribiendo en el teclado
+        // Terminado: guiña un ojo y se queda con cara feliz un rato antes de repetir.
+        case .done:     (row(3, 0..<4, 0.16) + row(4, 0..<5, 0.18) + row(4, 4..<5, 1.6),
+                         CGRect(x: 30, y: 57, width: 132, height: 68))
+        case .needsYou: (row(5, 0..<8, 0.14), CGRect(x: 30, y: 25, width: 146, height: 96))  // con el interrogante
+        }
+    }
+
+    /// Ojos cerrados con las "z".
+    private static let sleeping: Animation = (row(6, 0..<4, 0.6), CGRect(x: 31, y: 45, width: 131, height: 79))
+
+    /// Puntos por píxel de la hoja y caja fija donde se centra cada animación.
+    static let scale: CGFloat = 0.44
+    static let box = CGSize(width: 164 * scale, height: 170 * scale)
+
+    private static let image: CGImage? = {
+        guard let url = Bundle.main.url(forResource: "PetSprites", withExtension: "png"),
+              let src = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
+        return CGImageSourceCreateImageAtIndex(src, 0, nil)
+    }()
+
+    static var isAvailable: Bool { image != nil }
+
+    private static var cache: [String: CGImage] = [:]
+
+    /// Fotograma de ahora ya recortado; nil si la hoja no está en la app.
+    static func frame(for phase: Phase, asleep: Bool, at date: Date) -> CGImage? {
+        guard let image else { return nil }
+        let a = asleep ? sleeping : animation(for: phase)
+        let total = a.frames.reduce(0) { $0 + $1.duration }
+        var t = date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: total)
+        var f = a.frames[0]
+        for candidate in a.frames {
+            if t < candidate.duration { f = candidate; break }
+            t -= candidate.duration
+        }
+        let key = "\(f.row),\(f.col),\(a.crop)"
+        if let hit = cache[key] { return hit }
+        let rect = a.crop.offsetBy(dx: CGFloat(f.col) * cell.width, dy: CGFloat(f.row) * cell.height)
+        guard let cut = image.cropping(to: rect) else { return nil }
+        cache[key] = cut
+        return cut
+    }
+}
+
 struct PetRenderer: View {
     let phase: Phase
     /// Última actividad de Claude; en reposo, pasado `SessionMonitor.sleepAfter` se duerme.
     var lastActivity: Date = .distantFuture
+    @AppStorage(Pref.petColor) private var petColor = ""
+    @AppStorage(Pref.petStyle) private var petStyle = PetStyle.sprites.rawValue
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 0.05)) { ctx in
             let asleep = phase == .idle && ctx.date.timeIntervalSince(lastActivity) > SessionMonitor.sleepAfter
-            Text(asleep ? AsciiFrames.frame(in: AsciiFrames.sleeping, at: ctx.date)
-                        : AsciiFrames.frame(for: phase, at: ctx.date))
-                .font(.system(size: 22, weight: .semibold, design: .monospaced))
-                .foregroundStyle(.primary)
-                .padding(.horizontal, 10).padding(.vertical, 4)
-                .background(.regularMaterial, in: Capsule())
-                .overlay(Capsule().stroke(phase >= .done ? Color.orange : .clear, lineWidth: 2))
-                .fixedSize()
+            let tint = PetColor.color(from: petColor).map(AnyShapeStyle.init) ?? AnyShapeStyle(.primary)
+            Group {
+                if petStyle == PetStyle.sprites.rawValue,
+                   let frame = SpriteFrames.frame(for: phase, asleep: asleep, at: ctx.date) {
+                    Image(decorative: frame, scale: 1)
+                        .renderingMode(.template)
+                        .resizable()
+                        .interpolation(.high)
+                        .frame(width: CGFloat(frame.width) * SpriteFrames.scale,
+                               height: CGFloat(frame.height) * SpriteFrames.scale)
+                        .frame(width: SpriteFrames.box.width, height: SpriteFrames.box.height)
+                        .padding(.horizontal, 10).padding(.vertical, 4)
+                } else {
+                    Text(asleep ? AsciiFrames.frame(in: AsciiFrames.sleeping, at: ctx.date)
+                                : AsciiFrames.frame(for: phase, at: ctx.date))
+                        .font(.system(size: 22, weight: .semibold, design: .monospaced))
+                        .padding(.horizontal, 10).padding(.vertical, 4)
+                }
+            }
+            .foregroundStyle(tint)
+            .shadow(color: .black.opacity(0.35), radius: 1.5, y: 0.5)
+            .petGlass()
+            .overlay(Capsule().stroke(phase >= .done ? Color.orange : .clear, lineWidth: 2))
+            .fixedSize()
         }
     }
 }
@@ -219,9 +364,9 @@ struct PetView: View {
     @ViewBuilder private var statusLine: some View {
         let busy = monitor.sessions.filter { $0.phase == .thinking || $0.phase == .writing }
         if busy.count == 1, let s = busy.first {
-            caption("\(s.phase.label) · \(s.name)")
+            caption("\(s.phase.label)\n\(s.name)")
         } else if busy.count > 1 {
-            caption(L("\(busy.count) trabajando", "\(busy.count) working") + " · \(busy.map(\.name).joined(separator: ", "))")
+            caption(L("\(busy.count) trabajando", "\(busy.count) working") + "\n\(busy.map(\.name).joined(separator: ", "))")
         }
     }
 
@@ -245,7 +390,7 @@ private struct EdgeAwareCaption: View {
         let lo = -edges.left + margin + w / 2
         let hi = edges.right - margin - w / 2
         let dx = lo > hi ? 0 : min(max(0, lo), hi)
-        Text(text).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+        Text(text).font(.caption2).foregroundStyle(.secondary).lineLimit(2).multilineTextAlignment(.center)
             // Sombra negra suave para que se lea también sobre fondos blancos.
             .shadow(color: .black.opacity(0.55), radius: 1.5, x: 0, y: 0.5)
             .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 0)
@@ -283,7 +428,7 @@ private final class FreePanel: NSPanel {
 /// se colocan encima, debajo, a la derecha o a la izquierda según quepan en la pantalla.
 @MainActor
 final class PetWindowController {
-    static let petSize = NSSize(width: 300, height: 76)
+    static let petSize = NSSize(width: 300, height: 126)
     private let gap: CGFloat = 2
 
     private let panel = FreePanel(size: petSize)
@@ -307,7 +452,10 @@ final class PetWindowController {
         panel.contentView = host
 
         if panel.setFrameUsingName("ClaudioPet2") {
-            panel.setFrame(NSRect(origin: panel.frame.origin, size: Self.petSize), display: false)
+            // Mantiene el borde superior aunque el panel haya cambiado de alto entre versiones.
+            let saved = panel.frame
+            panel.setFrame(NSRect(x: saved.minX, y: saved.maxY - Self.petSize.height,
+                                  width: Self.petSize.width, height: Self.petSize.height), display: false)
         } else if let old = UserDefaults.standard.string(forKey: "NSWindow Frame ClaudioPet") {
             // Posición de la versión anterior (panel de 560 pt con la mascota abajo).
             let parts = old.split(separator: " ").compactMap { Double($0) }
@@ -327,6 +475,9 @@ final class PetWindowController {
                 self?.placeBubbles()
             }
         }
+        UserDefaults.standard.publisher(for: \.petStyle).removeDuplicates().dropFirst().sink { [weak self] _ in
+            DispatchQueue.main.async { self?.updateEdges(); self?.placeBubbles() }
+        }.store(in: &bag)
         monitor.$sessions.sink { [weak self] _ in
             DispatchQueue.main.async { self?.placeBubbles() }
         }.store(in: &bag)
@@ -345,6 +496,10 @@ final class PetWindowController {
     /// Zona visible de la mascota dentro de su panel (centrada arriba).
     private var petRect: NSRect {
         let f = panel.frame
+        if PetStyle.current == .sprites && SpriteFrames.isAvailable {
+            let h = SpriteFrames.box.height + 8, w = SpriteFrames.box.width + 20
+            return NSRect(x: f.midX - w / 2, y: f.maxY - 8 - h, width: w, height: h)
+        }
         return NSRect(x: f.midX - 70, y: f.maxY - 52, width: 140, height: 46)
     }
 
