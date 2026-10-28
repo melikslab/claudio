@@ -10,11 +10,17 @@ En modo demo, el menú del icono tiene **«Pet state (demo)»** para ponerla en 
 
 Al terminar, `pkill -f Claudio.app; open build/Claudio.app` la vuelve a abrir normal.
 
+La mascota animada es la que sale por defecto. Las capturas `ascii-*` se hacen con Settings → Pet style → Characters.
+
 | Fichero | Qué sale | Estado |
 |---|---|---|
-| `pet-reply-bubble.png` | La mascota con el globito de "Homepage redesign" y sus dos opciones | ✅ |
-| `pet-working.png` | La mascota trabajando, con los chats activos debajo | ✅ |
-| `pet-idle.png` | La mascota en reposo | ✅ |
+| `pet-reply-bubble.png` | La mascota animada con el globito de "Homepage redesign" y sus dos opciones | ✅ |
+| `pet-thinking.png` | La mascota animada pensando, con los ojos cargando | ✅ |
+| `pet-working.png` | La mascota animada escribiendo en el teclado | ✅ |
+| `pet-idle.png` | La mascota animada en reposo | ✅ |
+| `ascii-reply-bubble.png` | La mascota ASCII con el globito | ✅ |
+| `ascii-working.png` | La mascota ASCII trabajando, con los chats activos debajo | ✅ |
+| `ascii-idle.png` | La mascota ASCII en reposo | ✅ |
 | `menu-usage-limits.png` | El menú al hacer clic en el icono, con las barras de uso | ✅ |
 | `recent-chats.png` | El desplegable al pasar el ratón por el icono, con los últimos chats | ✅ |
 | `settings.png` | La ventana de Settings | Pendiente |

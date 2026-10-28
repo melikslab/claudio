@@ -24,4 +24,7 @@ Abre un issue con la plantilla que corresponda. Si es un error con la detección
 
 ## Mascotas nuevas
 
-Las animaciones están en `AsciiFrames` ([Pet.swift](Sources/Claudio/Pet.swift)): una lista de fotogramas por estado. `PetRenderer` es el único sitio que las dibuja, así que para usar imágenes basta con cambiarlo.
+Hay dos aspectos, los dos en [Pet.swift](Sources/Claudio/Pet.swift), y `PetRenderer` es el único sitio que los dibuja:
+
+- **Animada:** `SpriteFrames` lee [Resources/PetSprites.png](Resources/PetSprites.png), con celdas de 192 × 208 px y una fila por estado: reposo, pensando, trabajando, guiño, cara feliz, te necesita y dormido. Los dibujos van en blanco sobre fondo transparente, porque la app los tiñe con el color elegido. Cada animación indica sus fotogramas, su duración y la zona de la celda que ocupa.
+- **ASCII:** `AsciiFrames`, una lista de fotogramas de texto por estado.

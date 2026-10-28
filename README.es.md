@@ -8,7 +8,7 @@
 
 # Claudio: compañero de escritorio para Claude Code
 
-**App de barra de menús para macOS con una mascota ASCII flotante que te avisa cuando Claude Code termina, te enseña su última respuesta y las respuestas que propone, y sigue tus límites de uso de 5 h y semanal. 100 % local.**
+**App de barra de menús para macOS con una mascota animada flotante que te avisa cuando Claude Code termina, te enseña su última respuesta y las respuestas que propone, y sigue tus límites de uso de 5 h y semanal. 100 % local.**
 
 ![Solo macOS 14+](https://img.shields.io/badge/solo%20macOS-14%2B-black?logo=apple)
 ![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-nativo-555?logo=apple)
@@ -23,7 +23,7 @@
 
 ---
 
-Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (pestaña Code), en el terminal o en el IDE. Una mascota flotante muestra en todo momento qué está haciendo Claude: cuando piensa, trabaja, termina o te necesita. Al terminar, la mascota salta con un **¡!** y un globito con lo último que ha dicho y las respuestas que te propone. Un clic te lleva directamente a ese chat.
+Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (pestaña Code), en el terminal o en el IDE. Una mascota flotante muestra en todo momento qué está haciendo Claude: cuando piensa, trabaja, termina o te necesita. Al terminar, la mascota te guiña un ojo y aparece un globito con lo último que ha dicho y las respuestas que te propone. Un clic te lleva directamente a ese chat.
 
 > [!NOTE]
 > **🍎 Solo para Mac.** Pensada para Macs con chip Apple (M1 o posterior) y macOS 14 Sonoma o superior. Para Macs con Intel hay una descarga aparte. No hay versión para Windows ni Linux.
@@ -34,9 +34,9 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
 ## Capturas
 
 <p align="center">
-  <img src="docs/screenshots/pet-reply-bubble.png" width="560" alt="La mascota celebra que un chat ha terminado y muestra un globito con el principio del mensaje, la pregunta de Claude y dos respuestas para elegir">
+  <img src="docs/screenshots/pet-reply-bubble.png" width="420" alt="La mascota animada pide atención porque un chat te necesita, con un globito con el principio del mensaje, la pregunta de Claude y dos respuestas para elegir">
 </p>
-<p align="center"><em>Un chat ha terminado: la mascota avisa con un «!» y el globito muestra lo último que ha dicho Claude y las respuestas que propone. Un clic en una opción la copia y abre ese chat.</em></p>
+<p align="center"><em>Un chat te necesita: el globito muestra lo último que ha dicho Claude, su pregunta y las respuestas que propone. Un clic en una opción la copia y abre ese chat.</em></p>
 
 <table>
   <tr>
@@ -47,15 +47,34 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
     <td align="center"><em>Clic en el icono: límites de uso de 5 h y semanal (en naranja al acercarse al tope).</em></td>
     <td align="center"><em>Al pasar el ratón: tus últimos chats y qué está haciendo cada uno.</em></td>
   </tr>
+</table>
+
+<table>
   <tr>
-    <td align="center"><img src="docs/screenshots/pet-working.png" width="300" alt="Mascota escribiendo mientras Claude trabaja, con los chats activos debajo"></td>
-    <td align="center"><img src="docs/screenshots/pet-idle.png" width="300" alt="Mascota en reposo"></td>
+    <td align="center" width="33%"><img src="docs/screenshots/pet-thinking.png" width="180" alt="Mascota animada pensando, con los ojos cargando"></td>
+    <td align="center" width="33%"><img src="docs/screenshots/pet-working.png" width="180" alt="Mascota animada escribiendo en un teclado mientras Claude trabaja"></td>
+    <td align="center" width="33%"><img src="docs/screenshots/pet-idle.png" width="180" alt="Mascota animada en reposo"></td>
   </tr>
   <tr>
-    <td align="center"><em>Mientras Claude trabaja, con los chats activos debajo.</em></td>
+    <td align="center"><em>Pensando: los ojos se cargan.</em></td>
+    <td align="center"><em>Trabajando, con el nombre del chat debajo.</em></td>
     <td align="center"><em>En reposo, esperando al siguiente chat.</em></td>
   </tr>
 </table>
+
+<details>
+<summary><strong>¿Prefieres texto? El aspecto ASCII clásico está a un clic en Ajustes.</strong></summary>
+<br>
+<table>
+  <tr>
+    <td align="center" colspan="2"><img src="docs/screenshots/ascii-reply-bubble.png" width="420" alt="Mascota ASCII celebrando que un chat ha terminado, con su globito"></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="docs/screenshots/ascii-working.png" width="300" alt="Mascota ASCII escribiendo mientras Claude trabaja, con los chats activos debajo"></td>
+    <td align="center" width="50%"><img src="docs/screenshots/ascii-idle.png" width="300" alt="Mascota ASCII en reposo"></td>
+  </tr>
+</table>
+</details>
 
 <sub>Los chats de las capturas son de ejemplo.</sub>
 
@@ -64,17 +83,17 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
 ### 🐾 Mascota flotante
 - Siempre encima de las ventanas, visible en todos los escritorios y a pantalla completa.
 - Se arrastra libremente por todo el escritorio, en cualquier pantalla, y recuerda la posición. Si desconectas un monitor y se queda fuera, vuelve sola a la vista.
-- El texto de debajo ("Pensando… · nombre del chat") se desplaza hacia dentro si la mascota está pegada a un borde.
-- Cada estado tiene su animación ASCII:
+- El texto de debajo muestra el estado y el nombre del chat en dos líneas, y se desplaza hacia dentro si la mascota está pegada a un borde.
+- Dos aspectos, a elegir en Ajustes: la mascota **animada** (por defecto) o la **ASCII** clásica. Las dos admiten el color que quieras; en macOS 26 o posterior van sobre Liquid Glass.
 
-  | Estado | Animación |
-  |---|---|
-  | En reposo | `(◕‿◕)`, parpadea cada 6 s |
-  | Pensando | `(○_○)` → `(◔_◔)` → `(◑_◑)` → `(◕_◕)` → `(●_●)`: los ojos se van llenando |
-  | Trabajando / escribiendo | `(•̀ᴗ•́)✎___` |
-  | Terminado | `(ﾉ◕‿◕)ﾉ !` |
-  | Te necesita (permiso o pregunta) | `(⊙_⊙) ?` |
-  | Dormida (15 min sin actividad; clic para despertarla) | `(−_−) zZz` |
+  | Estado | Animada | ASCII |
+  |---|---|---|
+  | En reposo | Mira al frente y parpadea cada 6 s | `(◕‿◕)`, parpadea cada 6 s |
+  | Pensando | Los ojos se cargan como un indicador | `(○_○)` → `(◔_◔)` → `(◑_◑)` → `(◕_◕)` → `(●_●)` |
+  | Trabajando / escribiendo | Escribe en un teclado | `(•̀ᴗ•́)✎___` |
+  | Terminado | Guiña un ojo y pone cara feliz | `(ﾉ◕‿◕)ﾉ !` |
+  | Te necesita (permiso o pregunta) | Cara feliz con un `?` que bota | `(⊙_⊙) ?` |
+  | Dormida (15 min sin actividad; clic para despertarla) | Ojos cerrados, `zZz` | `(−_−) zZz` |
 
 ### 💬 Globito con respuestas rápidas
 - Cuando un chat termina, aparece un globito con **el principio del último mensaje** (4 líneas como máximo) y la pregunta, si la hay.
@@ -99,7 +118,7 @@ Claudio vigila los chats de **Claude Code** en la app de escritorio de Claude (p
 En español si tu Mac está en español; en inglés en cualquier otro idioma.
 
 ### ⚙️ Ajustes
-Abrir al iniciar el Mac, mostrar u ocultar la mascota, sonidos, notificaciones y botón de prueba.
+Abrir al iniciar el Mac, mostrar u ocultar la mascota, su aspecto (animada o ASCII) y su color, sonidos, notificaciones y botón de prueba.
 
 ## Instalación
 
@@ -156,7 +175,7 @@ Sources/Claudio/
 ├── main.swift             Arranque y modos de depuración (--dump, --parse, --usage, --calibrate)
 ├── AppDelegate.swift      Monta todo y abre chats con el enlace claude://
 ├── SessionMonitor.swift   Detecta chats y estados; extrae último mensaje y opciones
-├── Pet.swift              Mascota ASCII, globitos y ventana flotante
+├── Pet.swift              Mascota animada y ASCII, globitos y ventana flotante
 ├── StatusBar.swift        Icono de la barra de menús, desplegable y menú
 ├── UsageEstimator.swift   Estimación de uso de 5 h y semanal
 ├── UsageViews.swift       Barras de uso y ventana de calibración
@@ -224,12 +243,11 @@ No. Claudio es una app nativa de macOS.
 
 ## Hoja de ruta
 
-- [ ] Mascota con imágenes o sprites animados en lugar de ASCII
+- [x] Mascota animada, con la ASCII como opción
+- [ ] Más mascotas para elegir, aportadas como hojas de sprites
 - [ ] Firma y notarización para no tener que quitar la cuarentena
 
-## Créditos
-
-Inspirado en [Claudoscope](https://github.com/cordwainersmith/Claudoscope) de cordwainersmith (MIT), del que toma la idea de leer el estado de Claude Code desde `~/.claude`. Claudio es una reimplementación mucho más sencilla y no reutiliza su código.
+## Aviso
 
 Claudio es un proyecto independiente; no está afiliado a Anthropic ni cuenta con su respaldo. Claude y Claude Code son marcas de Anthropic.
 

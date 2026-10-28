@@ -8,7 +8,7 @@
 
 # Claudio: a desktop companion for Claude Code
 
-**A macOS menu bar app and floating ASCII desktop pet that tells you when Claude Code finishes, shows its last reply and suggested answers, and tracks your 5-hour and weekly usage limits. 100% local.**
+**A macOS menu bar app and floating animated desktop pet that tells you when Claude Code finishes, shows its last reply and suggested answers, and tracks your 5-hour and weekly usage limits. 100% local.**
 
 ![macOS 14+ only](https://img.shields.io/badge/macOS-14%2B%20only-black?logo=apple)
 ![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-native-555?logo=apple)
@@ -23,7 +23,7 @@
 
 ---
 
-Claude Code often works for minutes on its own. **Claudio** lets you look away without missing the moment it's done. It watches your Claude Code chats in the **Claude desktop app (Code tab)**, the **CLI** or your **IDE**. A small pet on your desktop shows what Claude is doing: thinking, working, done or waiting for you. When a chat finishes, the pet jumps with a **!** and a bubble shows the start of Claude's last reply and the answers it suggests. Click an answer and it's copied to the clipboard and that chat opens, ready to paste.
+Claude Code often works for minutes on its own. **Claudio** lets you look away without missing the moment it's done. It watches your Claude Code chats in the **Claude desktop app (Code tab)**, the **CLI** or your **IDE**. A small pet on your desktop shows what Claude is doing: thinking, working, done or waiting for you. When a chat finishes, the pet winks at you and a bubble shows the start of Claude's last reply and the answers it suggests. Click an answer and it's copied to the clipboard and that chat opens, ready to paste.
 
 > [!NOTE]
 > **🍎 macOS only.** Built for Apple Silicon Macs (M1 or later) running macOS 14 Sonoma or newer. A separate Intel build is available. There is no Windows or Linux version.
@@ -34,9 +34,9 @@ Claude Code often works for minutes on its own. **Claudio** lets you look away w
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/pet-reply-bubble.png" width="560" alt="Claudio desktop pet celebrating that a Claude Code chat finished, with a bubble showing Claude's last reply, its question and two suggested answers">
+  <img src="docs/screenshots/pet-reply-bubble.png" width="420" alt="Claudio animated desktop pet asking for attention after a Claude Code chat finished, with a bubble showing Claude's last reply, its question and two suggested answers">
 </p>
-<p align="center"><em>A Claude Code chat just finished: the pet shows a "!" and the bubble shows Claude's last reply and suggested answers. Click one to copy it and open that chat.</em></p>
+<p align="center"><em>A Claude Code chat needs you: the bubble shows Claude's last reply, its question and suggested answers. Click one to copy it and open that chat.</em></p>
 
 <table>
   <tr>
@@ -47,15 +47,34 @@ Claude Code often works for minutes on its own. **Claudio** lets you look away w
     <td align="center"><em>Click the menu bar icon: 5-hour and weekly usage limits, orange as you get close.</em></td>
     <td align="center"><em>Hover the icon: your recent chats and what each one is doing.</em></td>
   </tr>
+</table>
+
+<table>
   <tr>
-    <td align="center"><img src="docs/screenshots/pet-working.png" width="300" alt="ASCII pet typing while Claude Code works, with the active chats listed underneath"></td>
-    <td align="center"><img src="docs/screenshots/pet-idle.png" width="300" alt="ASCII pet idle on the desktop"></td>
+    <td align="center" width="33%"><img src="docs/screenshots/pet-thinking.png" width="180" alt="Animated pet thinking, its eyes loading, while Claude Code thinks"></td>
+    <td align="center" width="33%"><img src="docs/screenshots/pet-working.png" width="180" alt="Animated pet typing on a keyboard while Claude Code works"></td>
+    <td align="center" width="33%"><img src="docs/screenshots/pet-idle.png" width="180" alt="Animated pet idle on the desktop"></td>
   </tr>
   <tr>
-    <td align="center"><em>While Claude works, with the active chats underneath.</em></td>
+    <td align="center"><em>Thinking: the eyes load.</em></td>
+    <td align="center"><em>Working, with the chat name underneath.</em></td>
     <td align="center"><em>Idle, waiting for the next chat.</em></td>
   </tr>
 </table>
+
+<details>
+<summary><strong>Prefer text? The classic ASCII look is one click away in Settings.</strong></summary>
+<br>
+<table>
+  <tr>
+    <td align="center" colspan="2"><img src="docs/screenshots/ascii-reply-bubble.png" width="420" alt="ASCII pet celebrating that a Claude Code chat finished, with its reply bubble"></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="docs/screenshots/ascii-working.png" width="300" alt="ASCII pet typing while Claude Code works, with the active chats listed underneath"></td>
+    <td align="center" width="50%"><img src="docs/screenshots/ascii-idle.png" width="300" alt="ASCII pet idle on the desktop"></td>
+  </tr>
+</table>
+</details>
 
 <sub>The chats in the screenshots are sample data.</sub>
 
@@ -64,17 +83,17 @@ Claude Code often works for minutes on its own. **Claudio** lets you look away w
 ### 🐾 Floating desktop pet
 - Always on top, on every Space and in full screen.
 - Drag it anywhere on any display; it remembers where you left it. If you unplug a monitor, it comes back into view.
-- The caption underneath ("Thinking… · chat name") shifts inward when the pet sits at a screen edge.
-- An ASCII animation for every state:
+- The caption underneath shows the state and the chat name on two lines, and shifts inward when the pet sits at a screen edge.
+- Two looks, chosen in Settings: the **animated** pet (default) or the classic **ASCII** one. Pick any color for either; on macOS 26 and later it sits on Liquid Glass.
 
-  | State | Animation |
-  |---|---|
-  | Idle | `(◕‿◕)`, blinks every 6 s |
-  | Thinking | `(○_○)` → `(◔_◔)` → `(◑_◑)` → `(◕_◕)` → `(●_●)`, the eyes fill up |
-  | Working / writing | `(•̀ᴗ•́)✎___` |
-  | Done | `(ﾉ◕‿◕)ﾉ !` |
-  | Needs you (permission or question) | `(⊙_⊙) ?` |
-  | Asleep (15 min without activity; click to wake it) | `(−_−) zZz` |
+  | State | Animated | ASCII |
+  |---|---|---|
+  | Idle | Looks ahead and blinks every 6 s | `(◕‿◕)`, blinks every 6 s |
+  | Thinking | The eyes load like a spinner | `(○_○)` → `(◔_◔)` → `(◑_◑)` → `(◕_◕)` → `(●_●)` |
+  | Working / writing | Types on a keyboard | `(•̀ᴗ•́)✎___` |
+  | Done | Winks, then a happy face | `(ﾉ◕‿◕)ﾉ !` |
+  | Needs you (permission or question) | Happy face with a bouncing `?` | `(⊙_⊙) ?` |
+  | Asleep (15 min without activity; click to wake it) | Eyes closed, `zZz` | `(−_−) zZz` |
 
 ### 💬 Reply bubble with suggested answers
 - When a chat finishes, a bubble shows **the start of Claude's last message** (4 lines at most) and its question, if any.
@@ -99,7 +118,7 @@ Claude Code often works for minutes on its own. **Claudio** lets you look away w
 English, or Spanish if your Mac is set to Spanish.
 
 ### ⚙️ Settings
-Open at login, show or hide the pet, sounds, notifications and a test alert.
+Open at login, show or hide the pet, its look (animated or ASCII) and color, sounds, notifications and a test alert.
 
 ## Installation
 
@@ -156,7 +175,7 @@ Sources/Claudio/
 ├── main.swift             Startup and debug modes (--dump, --parse, --usage, --calibrate)
 ├── AppDelegate.swift      Wires everything up and opens chats via claude://
 ├── SessionMonitor.swift   Detects chats and states; extracts the last message and options
-├── Pet.swift              ASCII pet, bubbles and floating windows
+├── Pet.swift              Animated and ASCII pet, bubbles and floating windows
 ├── StatusBar.swift        Menu bar icon, hover panel and menu
 ├── UsageEstimator.swift   5-hour and weekly usage estimate
 ├── UsageViews.swift       Usage bars and calibration window
@@ -224,12 +243,11 @@ No. Claudio is a native macOS app.
 
 ## Roadmap
 
-- [ ] Pet with animated images or sprites instead of ASCII
+- [x] Animated pet, with the ASCII one kept as an option
+- [ ] More pets to choose from, contributed as sprite sheets
 - [ ] Signing and notarization, so there's no quarantine to remove
 
-## Credits
-
-Inspired by [Claudoscope](https://github.com/cordwainersmith/Claudoscope) by cordwainersmith (MIT), which showed the idea of reading Claude Code's state from `~/.claude`. Claudio is a much simpler reimplementation and doesn't reuse its code.
+## Disclaimer
 
 Claudio is an independent project and is not affiliated with or endorsed by Anthropic. Claude and Claude Code are trademarks of Anthropic.
 
