@@ -2,7 +2,7 @@
 
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 
-## [Unreleased]
+## [0.3.0] - 2026-10-28
 
 ### Added
 - Animated pet, now the default look: a hand-drawn face with an animation for each state (blinking at rest, loading eyes while thinking, typing on a keyboard while working, a wink and a happy face when done, a question mark when Claude needs you, and "z"s when asleep). The ASCII pet is still available under Settings → Pet style.
@@ -48,5 +48,6 @@ First public release of Claudio, a desktop companion for Claude Code on macOS.
 - Separate downloads for Apple Silicon (`Claudio-AppleSilicon.zip`) and Intel (`Claudio-Intel.zip`).
 - Debug modes `--dump`, `--parse`, `--usage` and `--calibrate`, plus a sample-data mode for screenshots (see `docs/screenshots/`).
 
+[0.3.0]: https://github.com/melikslab/claudio/releases/tag/v0.3.0
 [0.2.1]: https://github.com/melikslab/claudio/releases/tag/v0.2.1
 [0.2.0]: https://github.com/melikslab/claudio/releases/tag/v0.2.0

@@ -5,7 +5,7 @@
 #   VERSION=1.2.3 ./build-app.sh   versión que aparece en la app
 set -e
 cd "$(dirname "$0")"
-VERSION=${VERSION:-0.2.1}
+VERSION=${VERSION:-0.3.0}
 
 if [[ "$1" == "--intel" ]]; then
     ARCH=x86_64
